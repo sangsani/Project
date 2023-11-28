@@ -62,5 +62,5 @@
 - Meow sound when touching an obstacle
 - Jump sound
 - Meow sound when acquiring Churu
-- Background music
+- Background music, like funny and cozzy
 
