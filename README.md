@@ -11,7 +11,9 @@
 - Search ‘pygame’ and install it.
 - Type 'python -m pygame.examples.aliens' in cmd to test.
 
-* cmd = (command prompt) *
+*cmd = (command prompt)*
+***If it doesn't work, Type "python.exe -m pip install --upgrade pip"***
+***It happen because Pygame 2.1.3 doesn't play Python 3.11***
 
 ## 2. How to play
 ### KEY
@@ -27,8 +29,8 @@
 
 ### Items
 - Every time you reach 500 pts : You get Chur
-* Chur : Gain invincibility for 5 seconds *
+*Chur : Gain invincibility for 5 seconds*
 
 
-*** You can get only 1 item for each ***
-*** You can't get 2 Chur at 1 time ***
+***You can get only 1 item for each***
+***You can't get 2 Chur at 1 time***
