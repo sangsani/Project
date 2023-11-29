@@ -12,7 +12,9 @@
 - Type 'python -m pygame.examples.aliens' in cmd to test.
 
 *cmd = (command prompt)*
+
 ***If it doesn't work, Type "python.exe -m pip install --upgrade pip"***
+
 ***It happen because Pygame 2.1.3 doesn't play Python 3.11***
 
 ## 2. How to play
@@ -33,6 +35,7 @@
 
 
 ***You can get only 1 item for each***
+
 ***You can't get 2 Churu at 1 time***
 
 ## 3. Project Introduction
@@ -56,6 +59,7 @@
 
 ### Add item
 - Every time you reach 500 pts : You get Churu
+
 *Churu : Gain invincibility for 5 seconds*
 
 ### Background music and sound effects
