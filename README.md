@@ -9,13 +9,17 @@
 ### In ‘Visual Studio Code’
 - Press ‘Extensions (Ctrl+Shift+X)’
 - Search ‘pygame’ and install it.
-- Type 'python -m pygame.examples.aliens' in cmd to test.
+- Type ‘python -m pygame.examples.aliens’ in cmd to test.
 
 *cmd = (command prompt)*
 
-***If it doesn't work, Type "python.exe -m pip install --upgrade pip"***
-
-***It happen because Pygame 2.1.3 doesn't play Python 3.11***
+***If it doesn't work***
+- Type "python.exe -m pip install --upgrade pip"
+*It happen because Pygame 2.1.3 doesn't play Python 3.11*
+- Open ‘Command Palette (Ctrl+Shift+P)’
+- Type ‘Python: Select Interpreter’
+- Click Your own Python path ((ex) Python 3.12.0 64-bit (C://Program Files\Python312\python.exe))
+*It happen because Pygame had and wrong PATH*
 
 ## 2. How to play
 ### KEY
