@@ -39,10 +39,6 @@
 
 
 ***You can get only 1 item for each***
-<<<<<<< HEAD
-=======
-
->>>>>>> 856e6bfd5a8c145244a48ff82ecc2f4af7753ac9
 ***You can't get 2 Churu at 1 time***
 
 ## 3. Project Introduction
@@ -66,10 +62,6 @@
 
 ### Add item
 - Every time you reach 500 pts : You get Churu
-<<<<<<< HEAD
-=======
-
->>>>>>> 856e6bfd5a8c145244a48ff82ecc2f4af7753ac9
 *Churu : Gain invincibility for 5 seconds*
 
 ### Background music and sound effects
