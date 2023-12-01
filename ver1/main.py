@@ -252,15 +252,18 @@ def main():
             elif random.randint(0, 2) == 2:
                 obstacles.append(Bird(BIRD))
             elif random.randint(0, 2) == 3:
-                obstacles.append(Dog(Dog))
+                obstacles.append(Dog(DOG))
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.Cat_rect.colliderect(obstacle.rect):
-                pygame.time.delay(2000)
-                death_count += 1
-                menu(death_count)
+                if isinstance(obstacle, Dog):
+                    points -= 100
+                else:
+                    pygame.time.delay(2000)
+                    death_count += 1
+                    menu(death_count)
 
         background()
 
