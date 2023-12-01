@@ -75,20 +75,23 @@ class Dinosaur:
             self.dino_run = True
             self.dino_jump = False
 
+## Press Q or ENTER to end
+        if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
+            pygame.quit()
+            quit()
+
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS_DUCK
         self.step_index += 1
-
     def run(self):
         self.image = self.run_img[self.step_index // 5]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
         self.step_index += 1
-
     def jump(self):
         self.image = self.jump_img
         if self.dino_jump:
@@ -97,7 +100,6 @@ class Dinosaur:
         if self.jump_vel < - self.JUMP_VEL:
             self.dino_jump = False
             self.jump_vel = self.JUMP_VEL
-
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
 
@@ -118,7 +120,6 @@ class Cloud:
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.x, self.y))
 
-
 class Obstacle:
     def __init__(self, image, type):
         self.image = image
@@ -134,20 +135,16 @@ class Obstacle:
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
 
-
 class SmallCactus(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 325
-
-
 class LargeCactus(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 300
-
 
 class Bird(Obstacle):
     def __init__(self, image):
@@ -164,7 +161,7 @@ class Bird(Obstacle):
 
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, high_score
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
@@ -177,13 +174,23 @@ def main():
     obstacles = []
     death_count = 0
 
+    # Save HIGHTEST pts
+    high_score = 0
+
     def score():
-        global points, game_speed
+        global points, game_speed, high_score
         points += 1
         if points % 100 == 0:
             game_speed += 1
 
-        text = font.render("Points: " + str(points), True, (0, 0, 0))
+        # Update HIGHTEST pts
+        if points > high_score:
+            high_score = points
+
+        # Show HIGHTEST pts
+        text = font.render("Points: " + str(points), 
+                           "\nHightest Points: " + str(high_score), True, (0, 0, 0))
+
         textRect = text.get_rect()
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
