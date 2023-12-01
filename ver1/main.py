@@ -1,7 +1,13 @@
 import pygame
 import os
 import random
+
 pygame.init()
+
+point = 0  # 현재 점수를 나타내는 변수를 초기화합니다.
+highest_point = 0  # 최고 점수를 나타내는 변수를 초기화합니다.
+
+font = pygame.font.Font(None, 36)  # 게임 루프 바깥, 초기 설정 부분에 폰트 객체 생성 코드
 
 # Global Constants
 SCREEN_HEIGHT = 600
@@ -164,7 +170,7 @@ class Bird(Obstacle):
 
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
@@ -178,11 +184,15 @@ def main():
     death_count = 0
 
     def score():
-        global points, game_speed
+        global points, game_speed, highest_point
         points += 1
         if points % 100 == 0:
             game_speed += 1
 
+        # 현재 점수가 최고 점수보다 클 경우, 최고 점수를 업데이트합니다.
+        if points > highest_point:
+            highest_point = points
+            
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
         textRect.center = (1000, 40)
@@ -198,16 +208,30 @@ def main():
             x_pos_bg = 0
         x_pos_bg -= game_speed
 
+   
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
-        SCREEN.fill((255, 255, 255))
+                
         userInput = pygame.key.get_pressed()
 
+        if userInput[pygame.K_q]:  # 'q' 키를 계속해서 체크
+            run = False
+            
+        SCREEN.fill((255, 255, 255))
+        
         player.draw(SCREEN)
         player.update(userInput)
+        
+        # 'Highest Point:' 텍스트를 렌더링합니다.
+        highest_point_text = font.render(f'Highest Point: {highest_point}', True, (0, 0, 0))  # 여기서 highest_point는 최고 점수를 나타내는 변수입니다.
+
+
+        # 렌더링된 텍스트를 화면에 그립니다.
+        SCREEN.blit(highest_point_text, (886, 55))  # (10, 50)은 텍스트를 그릴 위치입니다.
+        
+
 
         if len(obstacles) == 0:
             if random.randint(0, 2) == 0:
