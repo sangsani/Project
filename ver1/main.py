@@ -3,7 +3,9 @@ import os
 import random
 pygame.init()
 
-# Global Constants
+# Create Font Object
+font = pygame.font.Font(None,36)
+
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -27,7 +29,8 @@ BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
 # Add DOG obstacle IMG
 DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog2.png")),
-       pygame.image.load(os.path.join("Assets/Dog", "Dog3.png"))]
+       pygame.image.load(os.path.join("Assets/Dog", "Dog3.png")),
+       pygame.image.load(os.path.join("Assets/Dog", "Dog4.png"))]
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
@@ -175,7 +178,7 @@ class Dog(Obstacle):
         self.rect.x -= game_speed
         if self.rect.x < -self.rect.width:
             obstacles.pop()
-            points -= 100
+            points -= 50  # lose 50 pts
 
         self.rect.x += self.speed * self.direction
 
@@ -187,9 +190,8 @@ class Dog(Obstacle):
         self.motion_index += 1
 
 
-
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, high_score
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_points
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -206,18 +208,20 @@ def main():
     high_score = 0
 
     def score():
-        global points, game_speed, high_score
+        global points, game_speed, highest_points
         points += 1
         if points % 100 == 0:
             game_speed += 1
 
-        # Update HIGHTEST pts
-        if points > high_score:
-            high_score = points
+        ## Give Churu when pts get 500
+        # if points % 500 == 0:
+            # Give Churu
 
-        # Show HIGHTEST pts
-        text = font.render("Points: " + str(points), 
-                           "\nHightest Points: " + str(high_score), True, (0, 0, 0))
+        # Update HIGHTEST pts
+        if points > highest_points:
+            highest_points = points
+
+        text = font.render("Points: " + str(points), True, (0, 0, 0))
 
         textRect = text.get_rect()
         textRect.center = (1000, 40)
@@ -239,11 +243,17 @@ def main():
                 run = False
 
         SCREEN.fill((255, 255, 255))
+
         userInput = pygame.key.get_pressed()
 
         player.draw(SCREEN)
         player.update(userInput)
 
+        # Show Highest pts
+        hp_text = font.render("Highest Point: " + str(highest_points), True, (0, 0, 0))
+        SCREEN.blit(hp_text, (886, 55))
+
+        # Add Dog obstacle
         if len(obstacles) == 0:
             if random.randint(0, 2) == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
@@ -258,8 +268,9 @@ def main():
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.Cat_rect.colliderect(obstacle.rect):
-                if isinstance(obstacle, Dog):
-                    points -= 100
+                if isinstance(obstacle, Dog):  # Check if the obstacle a Dog
+                    points -= 50  # Lose 50 pts
+                    obstacles.remove(obstacle)  # Remove DOG in obstacle list
                 else:
                     pygame.time.delay(2000)
                     death_count += 1
