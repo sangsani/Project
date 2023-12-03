@@ -220,8 +220,6 @@ def main():
     chaser_start_time = None
     chaser_hit_count = 0
 
-
-
     def score():
         global points, game_speed, highest_points
         points += 1
@@ -340,5 +338,4 @@ def menu(death_count):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main()
-
 menu(death_count=0)
