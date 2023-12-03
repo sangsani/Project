@@ -26,15 +26,18 @@ LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.pn
 BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
         pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
-# Add DOG obstacle IMG
+# Add DOG obstacle IMG 4
 DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog2.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog3.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog4.png"))]
+# Add BANANA obstacle IMG 3
+BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
+          pygame.image.load(os.path.join("Assets/Banana", "Banana2.png")),
+          pygame.image.load(os.path.join("Assets/Banana", "Banana3.png"))]
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
-
 
 class Cat:
     X_POS = 80
@@ -164,6 +167,7 @@ class Bird(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
+# Add Obstacle Dog
 class Dog(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
@@ -188,7 +192,12 @@ class Dog(Obstacle):
 
         self.image = self.image[self.motion_index // 5]
         self.motion_index += 1
-
+# Add Obstacle Banana
+class Banana(Obstacle):
+    def __init__(self, image):
+        self.type = random.randint(0, 2)
+        super().__init__(image, self.type)
+        self.rect.y = 325
 
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_points
@@ -206,6 +215,12 @@ def main():
 
     # Save HIGHTEST pts
     high_score = 0
+
+    # Chaser System
+    chaser_start_time = None
+    chaser_hit_count = 0
+
+
 
     def score():
         global points, game_speed, highest_points
@@ -263,14 +278,28 @@ def main():
                 obstacles.append(Bird(BIRD))
             elif random.randint(0, 2) == 3:
                 obstacles.append(Dog(DOG))
+            elif random.randint(0, 2) == 4:
+                obstacles.append(Banana(BANANA))
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.Cat_rect.colliderect(obstacle.rect):
-                if isinstance(obstacle, Dog):  # Check if the obstacle a Dog
-                    points -= 50  # Lose 50 pts
-                    obstacles.remove(obstacle)  # Remove DOG in obstacle list
+                # Check if obstacle is a Dog
+                if isinstance(obstacle, Dog):
+                    points -= 50        # Lose 50 pts
+                    obstacles.remove(obstacle)  # Remove DOG in obstacle list >> DIFFERENT Condition
+                # Check if obstacle is a Banana > Chaser system
+                elif isinstance(obstacle, Banana):
+                    if chaser_start_time is None or pygame.time.get_ticks() - chaser_start_time > 7000:
+                        chaser_start_time = pygame.time.get_ticks()
+                        chaser_hit_count = 1
+                    else:
+                        chaser_hit_count += 1
+                        if chaser_hit_count == 2:   # Plater hit Banana twice in 7 sec
+                            pygame.time.delay(2000)
+                            death_count += 1
+                            menu(death_count)
                 else:
                     pygame.time.delay(2000)
                     death_count += 1
