@@ -62,7 +62,6 @@ class Cat:
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
-
     def update(self, userInput):
         if self.Cat_duck:
             self.duck()
@@ -116,6 +115,7 @@ class Cat:
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
 # Add Chaser
 class Chaser:
+    # Basic Location
     def __init__(self, image):
         self.images = image
         self.image = self.images[0]
@@ -123,17 +123,18 @@ class Chaser:
         self.rect.x = SCREEN_WIDTH
         self.rect.y = 310
         self.index = 0
-        self.speed = 0
+# CHECK # Location = 0 setting  
+        self.x_pos =0
 
     def update(self):
         if self.index >= 10:
             self.index = 0
         self.image = self.images[self.index // 5]
         self.index += 1
-        self.rect.x -= self.speed
+        self.rect.x -= self.x_pos
         # Reset Chaser Position & Speed
         if self.rect.x < -self.rect.width:
-            self.speed = 0
+            self.x_pos = 0
             self.rect.x = SCREEN_WIDTH
 
     def draw(self, SCREEN):
@@ -228,8 +229,6 @@ class Banana(Obstacle):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 325
-
-
 
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_points
@@ -326,7 +325,8 @@ def main():
                     if chaser_start_time is None or pygame.time.get_ticks() - chaser_start_time > 7000:
                         chaser_start_time = pygame.time.get_ticks()
                         chaser_end_time = chaser_start_time + 7000
-                        chaser.speed = 2
+#######                 # Chaser Basic SPEED
+                        chaser.x_pos = 0
                         chaser.rect.x = 0
                     else:
                         chaser_hit_count += 1
@@ -347,10 +347,7 @@ def main():
         # Chaser's Rogic , Check if it is activation or not
         # !!!!! NEED MORE CHECK TO ADD !!!!!
         if chaser_start_time is not None:
-            if pygame.time.get_ticks() < chaser_end_time:
-                chaser.speed += 0.01
-            else:
-                chaser.speed -= 0.01    # Change chaser's speed to negative
+            chaser.x_pos += 4.5 if pygame.time.get_ticks() < chaser_end_time else -4.5
             chaser.update()
             chaser.draw(SCREEN)
 
