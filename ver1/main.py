@@ -35,6 +35,8 @@ DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
 BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
           pygame.image.load(os.path.join("Assets/Banana", "Banana2.png")),
           pygame.image.load(os.path.join("Assets/Banana", "Banana3.png"))]
+CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
+         pygame.image.load(os.path.join("Assets/Chaser", "Chaser2.png"))]
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
@@ -112,6 +114,30 @@ class Cat:
             self.jump_vel = self.JUMP_VEL
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
+# Add Chaser
+class Chaser:
+    def __init__(self, image):
+        self.images = image
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.rect.x = SCREEN_WIDTH
+        self.rect.y = 310
+        self.index = 0
+        self.speed = 0
+
+    def update(self):
+        if self.index >= 10:
+            self.index = 0
+        self.image = self.images[self.index // 5]
+        self.index += 1
+        self.rect.x -= self.speed
+        # Reset Chaser Position & Speed
+        if self.rect.x < -self.rect.width:
+            self.speed = 0
+            self.rect.x = SCREEN_WIDTH
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.image, (self.rect.x, self.rect.y))
 
 class Cloud:
     def __init__(self):
@@ -143,7 +169,6 @@ class Obstacle:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
-
 class SmallCactus(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
@@ -154,7 +179,6 @@ class LargeCactus(Obstacle):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 300
-
 class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
@@ -198,13 +222,14 @@ class Dog(Obstacle):
             self.image = self.image[self.motion_index // 5 + 2]  # When it move right > Dog3, Dog4
 
         self.motion_index += 1
-
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 325
+
+
 
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_points
@@ -224,7 +249,9 @@ def main():
     high_score = 0
 
     # Chaser System
+    chaser = Chaser(CHASER)
     chaser_start_time = None
+    chaser_end_time = None
     chaser_hit_count = 0
 
     def score():
@@ -294,11 +321,13 @@ def main():
                 if isinstance(obstacle, Dog):
                     points -= 50        # Lose 50 pts
                     obstacles.remove(obstacle)  # Remove DOG in obstacle list >> DIFFERENT Condition
+                if isinstance(obstacle, Banana):
                 # Check if obstacle is a Banana > Chaser system
-                elif isinstance(obstacle, Banana):
                     if chaser_start_time is None or pygame.time.get_ticks() - chaser_start_time > 7000:
                         chaser_start_time = pygame.time.get_ticks()
-                        chaser_hit_count = 1
+                        chaser_end_time = chaser_start_time + 7000
+                        chaser.speed = 2
+                        chaser.rect.x = 0
                     else:
                         chaser_hit_count += 1
                         if chaser_hit_count == 2:   # Plater hit Banana twice in 7 sec
@@ -314,6 +343,16 @@ def main():
 
         cloud.draw(SCREEN)
         cloud.update()
+
+        # Chaser's Rogic , Check if it is activation or not
+        # ???? NEED MORE CHECK TO ADD
+        if chaser_start_time is not None:
+            if pygame.time.get_ticks() < chaser_end_time:
+                chaser.speed += 0.01
+            else:
+                chaser.speed -= 0.01    # Change chaser's speed to negative
+            chaser.update()
+            chaser.draw(SCREEN)
 
         score()
 
