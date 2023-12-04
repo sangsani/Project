@@ -345,7 +345,7 @@ def main():
         cloud.update()
 
         # Chaser's Rogic , Check if it is activation or not
-        # ???? NEED MORE CHECK TO ADD
+        # !!!!! NEED MORE CHECK TO ADD !!!!!
         if chaser_start_time is not None:
             if pygame.time.get_ticks() < chaser_end_time:
                 chaser.speed += 0.01
@@ -355,7 +355,6 @@ def main():
             chaser.draw(SCREEN)
 
         score()
-
         clock.tick(30)
         pygame.display.update()
 
