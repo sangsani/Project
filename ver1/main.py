@@ -190,8 +190,15 @@ class Dog(Obstacle):
             self.motion_index = 0
             self.direction *= -1
 
-        self.image = self.image[self.motion_index // 5]
+        if self.direction == 1:
+            self.image = self.image[self.motion_index // 5]  # When it move left > Dog1, Dog2
+        # Dog List // 5 -> return 0 or 1  >> [Dog1.png, Dog2.png ...] 
+            # IF YOU WANT TO CHANGE, CHANGE LIST ORDER
+        else:
+            self.image = self.image[self.motion_index // 5 + 2]  # When it move right > Dog3, Dog4
+
         self.motion_index += 1
+
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
