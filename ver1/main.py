@@ -231,7 +231,7 @@ class Banana(Obstacle):
         self.rect.y = 325
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_points
+    global game_speed, x_pos_bg, y_pos_bg, obstacles, highest_points
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -261,7 +261,7 @@ def main():
 
         ## Give Churu when pts get 500
         # if points % 500 == 0:
-            # Give Churu
+            # Give Churu`
 
         # Update HIGHTEST pts
         if points > highest_points:
@@ -325,12 +325,12 @@ def main():
                     if chaser_start_time is None or pygame.time.get_ticks() - chaser_start_time > 7000:
                         chaser_start_time = pygame.time.get_ticks()
                         chaser_end_time = chaser_start_time + 7000
-#######                 # Chaser Basic SPEED
+#######                 # Chaser Basic LOCATITON
                         chaser.x_pos = 0
                         chaser.rect.x = 0
                     else:
                         chaser_hit_count += 1
-                        if chaser_hit_count == 2:   # Plater hit Banana twice in 7 sec
+                        if chaser_hit_count == 2:   # Player hit Banana twice in 7 sec
                             pygame.time.delay(2000)
                             death_count += 1
                             menu(death_count)
@@ -344,7 +344,7 @@ def main():
         cloud.draw(SCREEN)
         cloud.update()
 
-        # Chaser's Rogic , Check if it is activation or not
+        # Chaser's Logic , Check if it is activation or not
         # !!!!! NEED MORE CHECK TO ADD !!!!!
         if chaser_start_time is not None:
             chaser.x_pos += 4.5 if pygame.time.get_ticks() < chaser_end_time else -4.5
