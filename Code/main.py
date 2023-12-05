@@ -90,7 +90,7 @@ class Cat:
             self.Cat_run = True
             self.Cat_jump = False
 
-## Press Q or ENTER to end
+## Press Q or ENTER to end game
         if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
             pygame.quit()
             quit()
