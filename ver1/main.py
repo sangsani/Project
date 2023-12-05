@@ -38,6 +38,10 @@ BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
 CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
          pygame.image.load(os.path.join("Assets/Chaser", "Chaser2.png"))]
 
+# Add Churu Item IMG 1
+CHURU = [pygame.image.load(os.path.join("Assets/Item/Churu", "CatRun1.png")),
+           pygame.image.load(os.path.join("Assets/Item/Churu", "CatRun2.png"))]
+
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
 
