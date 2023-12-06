@@ -1,14 +1,19 @@
 import pygame
 import os
 import random
+
 pygame.init()
 
-# Create Font Object
-font = pygame.font.Font(None,36)
-
+# Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+### Highest Score
+points = 0 
+highest_point = 0  
+# Create Font Object
+font = pygame.font.Font(None,36)
 
 RUNNING = [pygame.image.load(os.path.join("Assets/Cat", "CatRun1.png")),
            pygame.image.load(os.path.join("Assets/Cat", "CatRun2.png"))]
@@ -22,7 +27,6 @@ SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.pn
 LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.png")),
                 pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus2.png")),
                 pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus3.png"))]
-
 BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
         pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
@@ -34,6 +38,7 @@ DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
+
 
 class Cat:
     X_POS = 80
@@ -81,23 +86,20 @@ class Cat:
             self.Cat_run = True
             self.Cat_jump = False
 
-## Press Q or ENTER to end
-        if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
-            pygame.quit()
-            quit()
-
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS_DUCK
         self.step_index += 1
+
     def run(self):
         self.image = self.run_img[self.step_index // 5]
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
         self.step_index += 1
+
     def jump(self):
         self.image = self.jump_img
         if self.Cat_jump:
@@ -106,6 +108,7 @@ class Cat:
         if self.jump_vel < - self.JUMP_VEL:
             self.Cat_jump = False
             self.jump_vel = self.JUMP_VEL
+
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
 
@@ -124,7 +127,6 @@ class Cloud:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.x, self.y))
-
 class Obstacle:
     def __init__(self, image, type):
         self.image = image
@@ -150,7 +152,6 @@ class LargeCactus(Obstacle):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 300
-
 class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
@@ -163,6 +164,7 @@ class Bird(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
+
 # Add Obstacle Dog
 class Dog(Obstacle):
     def __init__(self, image):
@@ -185,13 +187,14 @@ class Dog(Obstacle):
         if self.motion_index >= 15:
             self.motion_index = 0
             self.direction *= -1
-
+        # When it move left > Dog1, Dog2
         if self.direction == 1:
-            self.image = self.image[self.motion_index // 5]  # When it move left > Dog1, Dog2
-        # Dog List // 5 -> return 0 or 1  >> [Dog1.png, Dog2.png ...] 
+            self.image = self.image[self.motion_index // 5]  
+            # Dog List // 5 -> return 0 or 1  >> [Dog1.png, Dog2.png ...] 
             # IF YOU WANT TO CHANGE, CHANGE LIST ORDER
+        # When it move right > Dog3, Dog4
         else:
-            self.image = self.image[self.motion_index // 5 + 2]  # When it move right > Dog3, Dog4
+            self.image = self.image[self.motion_index // 5 + 2]
 
         self.motion_index += 1
 
@@ -211,21 +214,16 @@ def main():
     death_count = 0
 
     def score():
-        global points, game_speed
+        global points, game_speed, highest_point
         points += 1
         if points % 100 == 0:
             game_speed += 1
 
-        ## Give Churu when pts get 500
-        # if points % 500 == 0:
-            # Give Churu
-
         # Update HIGHTEST pts
         if points > highest_point:
             highest_point = points
-
+            
         text = font.render("Points: " + str(points), True, (0, 0, 0))
-
         textRect = text.get_rect()
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
@@ -240,21 +238,30 @@ def main():
             x_pos_bg = 0
         x_pos_bg -= game_speed
 
+   
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
+                
         userInput = pygame.key.get_pressed()
 
+        ## Press Q or ENTER to end
+        if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
+            pygame.quit()
+            quit()
+            
+        SCREEN.fill((255, 255, 255))
+        
         player.draw(SCREEN)
         player.update(userInput)
+        
+        # Render 'Highest Points:' Text
+        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
+        SCREEN.blit(highest_point_text, (886, 55))  # (10, 50) is Location
+        
 
-        # Show Highest pts
-        hp_text = font.render("Highest Point: " + str(highest_point), True, (0, 0, 0))
-        SCREEN.blit(hp_text, (886, 55))
 
-        # Add Dog obstacle
         if len(obstacles) == 0:
             if random.randint(0, 2) == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
@@ -287,6 +294,7 @@ def main():
         clock.tick(30)
         pygame.display.update()
 
+
 def menu(death_count):
     global points
     run = True
@@ -299,6 +307,9 @@ def menu(death_count):
         elif death_count > 0:
             text = font.render("Press any Key to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
+            # Render 'Highest Points:' Text
+            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
+            SCREEN.blit(highest_point_text, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 80))  # Set Location
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
@@ -312,5 +323,6 @@ def menu(death_count):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main()
+
 
 menu(death_count=0)
