@@ -35,7 +35,6 @@ DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
 
-
 class Cat:
     X_POS = 80
     Y_POS = 310
