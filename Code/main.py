@@ -174,29 +174,33 @@ class Dog(Obstacle):
         self.motion_index = 0
         self.direction = 1
         self.speed = 2
+        self.distance = 10
+        self.original_x = self.rect.x
 
     def update(self):
         global points 
         self.rect.x -= game_speed
         if self.rect.x < -self.rect.width:
             obstacles.pop()
-            points -= 50  # lose 50 pts
+            points -= 50  # lose 50 pts if hit the dog
+
+        if abs(self.rect.x - self.original_x) > self.distance:
+            self.direction *= -1
+            self.original_x = self.rect.x
 
         self.rect.x += self.speed * self.direction
 
-        if self.motion_index >= 15:
-            self.motion_index = 0
-            self.direction *= -1
         # When it move left > Dog1, Dog2
         if self.direction == 1:
             self.image = self.image[self.motion_index // 5]  
-            # Dog List // 5 -> return 0 or 1  >> [Dog1.png, Dog2.png ...] 
-            # IF YOU WANT TO CHANGE, CHANGE LIST ORDER
         # When it move right > Dog3, Dog4
         else:
             self.image = self.image[self.motion_index // 5 + 2]
 
         self.motion_index += 1
+        if self.motion_index >= 10:
+            self.motion_index = 0
+
 
 
 def main():
@@ -246,7 +250,7 @@ def main():
                 
         userInput = pygame.key.get_pressed()
 
-        ## Press Q or ENTER to end
+        # Press Q or ENTER to end
         if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
             pygame.quit()
             quit()
@@ -259,26 +263,25 @@ def main():
         # Render 'Highest Points:' Text
         highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
         SCREEN.blit(highest_point_text, (886, 55))  # (10, 50) is Location
-        
-
 
         if len(obstacles) == 0:
-            if random.randint(0, 2) == 0:
+            obstacle_type = random.randint(0, 3)
+            if obstacle_type == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
-            elif random.randint(0, 2) == 1:
+            elif obstacle_type == 1:
                 obstacles.append(LargeCactus(LARGE_CACTUS))
-            elif random.randint(0, 2) == 2:
+            elif obstacle_type == 2:
                 obstacles.append(Bird(BIRD))
-            elif random.randint(0, 2) == 3:
+            elif obstacle_type == 3:
                 obstacles.append(Dog(DOG))
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.Cat_rect.colliderect(obstacle.rect):
-                if isinstance(obstacle, Dog):  # Check if the obstacle a Dog
+                if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
                     points -= 50  # Lose 50 pts
-                    obstacles.remove(obstacle)  # Remove DOG in obstacle list
+                    obstacles.remove(obstacle)  # Remove the dog after losing points
                 else:
                     pygame.time.delay(2000)
                     death_count += 1
