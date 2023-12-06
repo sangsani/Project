@@ -168,38 +168,18 @@ class Bird(Obstacle):
 # Add Obstacle Dog
 class Dog(Obstacle):
     def __init__(self, image):
-        self.type = random.randint(0, 2)
+        self.type = 0
         super().__init__(image, self.type)
         self.rect.y = 325
-        self.motion_index = 0
-        self.direction = 1
-        self.speed = 2
-        self.distance = 10
-        self.original_x = self.rect.x
+        self.index = 0
 
-    def update(self):
-        global points 
-        self.rect.x -= game_speed
-        if self.rect.x < -self.rect.width:
-            obstacles.pop()
-            points -= 50  # lose 50 pts if hit the dog
 
-        if abs(self.rect.x - self.original_x) > self.distance:
-            self.direction *= -1
-            self.original_x = self.rect.x
+    def draw(self, SCREEN):
+        if self.index >= 9:
+            self.index = 0
+        SCREEN.blit(self.image[self.index//5], self.rect)
+        self.index += 1
 
-        self.rect.x += self.speed * self.direction
-
-        # When it move left > Dog1, Dog2
-        if self.direction == 1:
-            self.image = self.image[self.motion_index // 5]  
-        # When it move right > Dog3, Dog4
-        else:
-            self.image = self.image[self.motion_index // 5 + 2]
-
-        self.motion_index += 1
-        if self.motion_index >= 10:
-            self.motion_index = 0
 
 
 
@@ -262,7 +242,7 @@ def main():
         
         # Render 'Highest Points:' Text
         highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
-        SCREEN.blit(highest_point_text, (886, 55))  # (10, 50) is Location
+        SCREEN.blit(highest_point_text, (886, 55))  # Location
 
         if len(obstacles) == 0:
             obstacle_type = random.randint(0, 3)
@@ -280,7 +260,7 @@ def main():
             obstacle.update()
             if player.Cat_rect.colliderect(obstacle.rect):
                 if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
-                    points -= 50  # Lose 50 pts
+                    points -= 100  # Lose 100 pts
                     obstacles.remove(obstacle)  # Remove the dog after losing points
                 else:
                     pygame.time.delay(2000)
