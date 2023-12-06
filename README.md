@@ -38,7 +38,6 @@
 *Churu : Gain invincibility for 5 seconds*
 
 
-***You can get only 1 item for each***
 ***You can't get 2 Churu at 1 time***
 
 ## 3. Project Introduction
