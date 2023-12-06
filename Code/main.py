@@ -197,7 +197,7 @@ class Dog(Obstacle):
 
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_points
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -210,11 +210,8 @@ def main():
     obstacles = []
     death_count = 0
 
-    # Save HIGHTEST pts
-    high_score = 0
-
     def score():
-        global points, game_speed, highest_points
+        global points, game_speed
         points += 1
         if points % 100 == 0:
             game_speed += 1
@@ -224,8 +221,8 @@ def main():
             # Give Churu
 
         # Update HIGHTEST pts
-        if points > highest_points:
-            highest_points = points
+        if points > highest_point:
+            highest_point = points
 
         text = font.render("Points: " + str(points), True, (0, 0, 0))
 
@@ -254,7 +251,7 @@ def main():
         player.update(userInput)
 
         # Show Highest pts
-        hp_text = font.render("Highest Point: " + str(highest_points), True, (0, 0, 0))
+        hp_text = font.render("Highest Point: " + str(highest_point), True, (0, 0, 0))
         SCREEN.blit(hp_text, (886, 55))
 
         # Add Dog obstacle
