@@ -66,6 +66,9 @@ class Cat:
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
+        # Invincible Statement True
+        self.invincible = False 
+
     def update(self, userInput):
         if self.Cat_duck:
             self.duck()
@@ -117,6 +120,11 @@ class Cat:
             self.jump_vel = self.JUMP_VEL
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
+    def become_invincible(self):
+        self.invincible = True
+        pygame.time.set_timer(pygame.USEREVENT, 5000)
+        # Act Userevent 
+
 # Add Chaser
 class Chaser:
     # Basic Location
@@ -140,6 +148,26 @@ class Chaser:
         if self.rect.x < -self.rect.width:
             self.x_pos = 0
             self.rect.x = SCREEN_WIDTH
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.image, (self.rect.x, self.rect.y))
+# Add Item Churu
+class Churu:
+    def __init__(self, image):
+        self.images = image
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.rect.x = 0  # Churu Location
+        self.rect.y = 500  # Churu Location
+        self.index = 0
+        self.x_pos = 0
+
+    def update(self):
+        if self.index >= 10:
+            self.index = 0
+        self.image = self.images[self.index // 5]
+        self.index += 1
+        self.rect.x -= self.x_pos
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.rect.x, self.rect.y))
@@ -234,6 +262,7 @@ class Banana(Obstacle):
         super().__init__(image, self.type)
         self.rect.y = 325
 
+
 def main():
     global game_speed, x_pos_bg, y_pos_bg, obstacles, highest_points
     run = True
@@ -264,8 +293,8 @@ def main():
             game_speed += 1
 
         ## Give Churu when pts get 500
-        # if points % 500 == 0:
-            # Give Churu`
+        if points % 500 == 0:
+            churu = Churu(CHURU)
 
         # Update HIGHTEST pts
         if points > highest_points:
@@ -291,10 +320,16 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            elif event.type == pygame.USEREVENT:
+                player.invincible = False # Invincible Statement False
 
         SCREEN.fill((255, 255, 255))
 
         userInput = pygame.key.get_pressed()
+        # Press C to use Churu >> set statement None
+        if userInput[pygame.K_c] and churu is not None:
+            player.become_invincible()
+            churu = None
 
         player.draw(SCREEN)
         player.update(userInput)
