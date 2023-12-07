@@ -121,10 +121,13 @@ class Cat:
 # Add Chaser
 class Chaser:
     def __init__(self, image):
+        self.image = CHASER
         self.x = 0
         self.y = 325  # Location
-        self.width = self.image.get_width()
+        self.width = self.image
         self.speed = game_speed  # Speed
+        self.index = 0
+
 
     def update(self):
         self.x += self.speed
@@ -140,7 +143,6 @@ class Cloud:
         self.x = SCREEN_WIDTH + random.randint(800, 1000)
         self.y = random.randint(50, 100)
         self.image = CLOUD
-        self.width = self.image.get_width()
 
     def update(self):
         self.x -= game_speed
@@ -194,7 +196,7 @@ class Dog(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 350
         self.index = 0
 
     def draw(self, SCREEN):
@@ -208,7 +210,7 @@ class Banana(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 350
 
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
@@ -227,7 +229,6 @@ def main():
     # Chaser System
     chaser = Chaser(CHASER)
     chaser_start_time = None
-    chaser_end_time = chaser_start_time + 7000
     chaser_hit_count = 0
 
     def score():
