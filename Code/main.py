@@ -261,15 +261,14 @@ def main():
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-                
+                run = False                
         userInput = pygame.key.get_pressed()
 
         # Press Q or ENTER to end
         if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
             pygame.quit()
             quit()
-            
+
         SCREEN.fill((255, 255, 255))
         
         player.draw(SCREEN)
@@ -281,7 +280,6 @@ def main():
 
         if len(obstacles) == 0:
             obstacle_type = random.randint(0, 5)  
-
             if obstacle_type == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
             elif obstacle_type == 1:
@@ -290,7 +288,7 @@ def main():
                 obstacles.append(Bird(BIRD))
             elif obstacle_type == 3:
                 obstacles.append(Dog(DOG))
-            elif obstacle_type == 4:
+            else:
                 obstacles.append(Banana(BANANA))
 
         for obstacle in obstacles:
@@ -301,6 +299,7 @@ def main():
                 if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
                     points -= 200  # Lose 100 pts
                     obstacles.remove(obstacle)  # Remove the dog after
+
                 if isinstance(obstacle, Banana):
                     chaser_hit_count += 1
                     obstacles.remove(obstacle)  # Remove the Banana after
@@ -320,6 +319,7 @@ def main():
                         pygame.time.delay(800)
                         death_count += 1
                         menu(death_count)
+
                 else:
                     pygame.time.delay(800)
                     death_count += 1
