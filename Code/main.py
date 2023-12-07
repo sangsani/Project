@@ -31,10 +31,9 @@ BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
         pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
 # Add DOG obstacle IMG 4
-DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
-       pygame.image.load(os.path.join("Assets/Dog", "Dog2.png")),
-       pygame.image.load(os.path.join("Assets/Dog", "Dog3.png")),
-       pygame.image.load(os.path.join("Assets/Dog", "Dog4.png"))]
+DOG = [pygame.image.load(os.path.join("Assets/Dog", "DogRun1.png")),
+       pygame.image.load(os.path.join("Assets/Dog", "DogRun2.png"))]
+
 # Add BANANA obstacle IMG 3
 BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
           pygame.image.load(os.path.join("Assets/Banana", "Banana2.png")),
@@ -48,8 +47,8 @@ BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
 
 class Cat:
     X_POS = 80
-    Y_POS = 310
-    Y_POS_DUCK = 340
+    Y_POS = 280
+    Y_POS_DUCK = 330
     JUMP_VEL = 8.5
 
     def __init__(self):
@@ -123,7 +122,7 @@ class Chaser:
     def __init__(self, image):
         self.image = image
         self.x = 0
-        self.y = 325  # Location
+        self.y = 280  # Location
         self.speed = -game_speed + 10  # Speed
         self.index = 0
 
@@ -198,7 +197,7 @@ class Dog(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 350
+        self.rect.y = 310
         self.index = 0
 
     def draw(self, SCREEN):
