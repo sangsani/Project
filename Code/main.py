@@ -173,15 +173,35 @@ class Dog(Obstacle):
         self.rect.y = 325
         self.index = 0
 
-
     def draw(self, SCREEN):
         if self.index >= 9:
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
 
+# class Dog(Obstacle):
+#     def __init__(self, image):
+#         self.type = 0
+#         super().__init__(image, self.type)
+#         self.rect.y = 325
+#         self.index = 0
 
+#         self.direction = 1  # 1 for RIGHT, -1 for LEFT
+#         self.distance = 0  # Distance moved
+#         self.initial_x = self.rect.x  # Store the initial x-pos
 
+#     def update(self):
+#         if self.distance >= 20:  # Reverse direction after moving 10
+#             self.direction *= -1
+#             self.distance = 0
+#         self.rect.x += self.direction
+#         self.distance += 1
+
+#     def draw(self, SCREEN):
+#         if self.index >= 9:
+#             self.index = 0
+#         SCREEN.blit(self.image[self.index//5], self.rect)
+#         self.index += 1
 
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
@@ -222,7 +242,6 @@ def main():
             x_pos_bg = 0
         x_pos_bg -= game_speed
 
-   
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
