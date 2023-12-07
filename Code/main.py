@@ -224,10 +224,10 @@ def main():
     obstacles = []
     death_count = 0
 
-        # Chaser System
+    # Chaser System
     chaser = Chaser(CHASER)
     chaser_start_time = None
-    chaser_end_time = None
+    chaser_end_time = chaser_start_time + 7000
     chaser_hit_count = 0
 
     def score():
