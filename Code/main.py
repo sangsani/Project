@@ -120,30 +120,20 @@ class Cat:
 
 # Add Chaser
 class Chaser:
-    # Basic Location
     def __init__(self, image):
-        self.images = image
-        self.image = self.images[0]
-        self.rect = self.image.get_rect()
-        self.rect.x = SCREEN_WIDTH
-        self.rect.y = 310
-        self.index = 0
-# CHECK # Location = 0 setting  
-        self.x_pos =0
+        self.x = 0
+        self.y = 325  # Location
+        self.width = self.image.get_width()
+        self.speed = game_speed  # Speed
 
     def update(self):
-        if self.index >= 10:
-            self.index = 0
-        self.image = self.images[self.index // 5]
-        self.index += 1
-        self.rect.x -= self.x_pos
-        # Reset Chaser Position & Speed
-        if self.rect.x < -self.rect.width:
-            self.x_pos = 0
-            self.rect.x = SCREEN_WIDTH
+        self.x += self.speed
+        if self.x >= (SCREEN_WIDTH // 2 - 10):
+            self.speed = -game_speed  # - Speed
+            self.x = 0
 
     def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.rect.x, self.rect.y))
+        SCREEN.blit(self.image, (self.x, self.y))
 
 class Cloud:
     def __init__(self):
@@ -306,24 +296,27 @@ def main():
                 if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
                     points -= 100  # Lose 100 pts
                     obstacles.remove(obstacle)  # Remove the dog after losing points
-                if isinstance(obstacle, Banana):
-                # Check if obstacle is a Banana > Chaser system
-                    if chaser_start_time is None or pygame.time.get_ticks() - chaser_start_time > 7000:
-                        chaser_start_time = pygame.time.get_ticks()
-                        chaser_end_time = chaser_start_time + 7000
-#######                 # Chaser Basic LOCATITON
-                        chaser.x_pos = 0
-                        chaser.rect.x = 0
-                    else:
-                        chaser_hit_count += 1
-                        if chaser_hit_count == 2:   # Player hit Banana twice in 7 sec
-                            pygame.time.delay(2000)
-                            death_count += 1
-                            menu(death_count)
+            elif player.Cat_rect.colliderect(obstacle.rect):
+                # Banana > Chaser system
+                if chaser_start_time is None:
+                    # Start the Chaser and the Timer
+                    chaser_start_time = pygame.time.get_ticks()
+                elif pygame.time.get_ticks() - chaser_start_time > 7000:
+                    # After 7 seconds, reset all conditions
+                    chaser_start_time = None
+                    chaser_hit_count = 0
                 else:
-                    pygame.time.delay(2000)
-                    death_count += 1
-                    menu(death_count)
+                    chaser_hit_count += 1
+                    if chaser_hit_count == 2:   # Player hit Banana twice in 7 sec
+                        pygame.time.delay(2000)
+                        death_count += 1
+                        menu(death_count)
+                obstacles.remove(obstacle)  # Remove the Banana after hit once > Because it Dont end game in once
+
+            else:
+                pygame.time.delay(800)
+                death_count += 1
+                menu(death_count)
 
         background()
 
