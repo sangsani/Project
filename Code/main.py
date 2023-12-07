@@ -30,11 +30,18 @@ LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.pn
 BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
         pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
-# Add DOG obstacle IMG
+# Add DOG obstacle IMG 4
 DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog2.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog3.png")),
        pygame.image.load(os.path.join("Assets/Dog", "Dog4.png"))]
+# Add BANANA obstacle IMG 3
+BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
+          pygame.image.load(os.path.join("Assets/Banana", "Banana2.png")),
+          pygame.image.load(os.path.join("Assets/Banana", "Banana3.png"))]
+# Add CHASER IMG 2
+CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
+         pygame.image.load(os.path.join("Assets/Chaser", "Chaser2.png"))]
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
@@ -127,6 +134,7 @@ class Cloud:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.x, self.y))
+
 class Obstacle:
     def __init__(self, image, type):
         self.image = image
@@ -325,6 +333,4 @@ def menu(death_count):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main()
-
-
 menu(death_count=0)
