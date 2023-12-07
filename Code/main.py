@@ -35,6 +35,7 @@ DOG = [pygame.image.load(os.path.join("Assets/Dog", "Dog1.png")),
 BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
           pygame.image.load(os.path.join("Assets/Banana", "Banana2.png")),
           pygame.image.load(os.path.join("Assets/Banana", "Banana3.png"))]
+# Add CHASER IMG 2
 CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
          pygame.image.load(os.path.join("Assets/Chaser", "Chaser2.png"))]
 
@@ -62,6 +63,7 @@ class Cat:
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
+
     def update(self, userInput):
         if self.Cat_duck:
             self.duck()
@@ -86,23 +88,20 @@ class Cat:
             self.Cat_run = True
             self.Cat_jump = False
 
-## Press Q or ENTER to end
-        if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
-            pygame.quit()
-            quit()
-
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS_DUCK
         self.step_index += 1
+
     def run(self):
         self.image = self.run_img[self.step_index // 5]
         self.Cat_rect = self.image.get_rect()
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
         self.step_index += 1
+
     def jump(self):
         self.image = self.jump_img
         if self.Cat_jump:
@@ -111,8 +110,10 @@ class Cat:
         if self.jump_vel < - self.JUMP_VEL:
             self.Cat_jump = False
             self.jump_vel = self.JUMP_VEL
+
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
+
 # Add Chaser
 class Chaser:
     # Basic Location
@@ -170,6 +171,7 @@ class Obstacle:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
+
 class SmallCactus(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
@@ -192,6 +194,7 @@ class Bird(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
+
 # Add Obstacle Dog
 class Dog(Obstacle):
     def __init__(self, image):
@@ -223,6 +226,31 @@ class Dog(Obstacle):
             self.image = self.image[self.motion_index // 5 + 2]  # When it move right > Dog3, Dog4
 
         self.motion_index += 1
+
+# class Dog(Obstacle):
+#     def __init__(self, image):
+#         self.type = 0
+#         super().__init__(image, self.type)
+#         self.rect.y = 325
+#         self.index = 0
+
+#         self.direction = 1  # 1 for RIGHT, -1 for LEFT
+#         self.distance = 0  # Distance moved
+#         self.initial_x = self.rect.x  # Store the initial x-pos
+
+#     def update(self):
+#         if self.distance >= 20:  # Reverse direction after moving 10
+#             self.direction *= -1
+#             self.distance = 0
+#         self.rect.x += self.direction
+#         self.distance += 1
+
+#     def draw(self, SCREEN):
+#         if self.index >= 9:
+#             self.index = 0
+#         SCREEN.blit(self.image[self.index//5], self.rect)
+#         self.index += 1
+
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
@@ -231,7 +259,7 @@ class Banana(Obstacle):
         self.rect.y = 325
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, obstacles, highest_points
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -244,31 +272,23 @@ def main():
     obstacles = []
     death_count = 0
 
-    # Save HIGHTEST pts
-    high_score = 0
-
-    # Chaser System
+        # Chaser System
     chaser = Chaser(CHASER)
     chaser_start_time = None
     chaser_end_time = None
     chaser_hit_count = 0
 
     def score():
-        global points, game_speed, highest_points
+        global points, game_speed, highest_point
         points += 1
         if points % 100 == 0:
             game_speed += 1
 
-        ## Give Churu when pts get 500
-        # if points % 500 == 0:
-            # Give Churu`
-
         # Update HIGHTEST pts
-        if points > highest_points:
-            highest_points = points
-
+        if points > highest_point:
+            highest_point = points
+            
         text = font.render("Points: " + str(points), True, (0, 0, 0))
-
         textRect = text.get_rect()
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
@@ -287,27 +307,32 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
-        SCREEN.fill((255, 255, 255))
-
+                
         userInput = pygame.key.get_pressed()
 
+        # Press Q or ENTER to end
+        if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
+            pygame.quit()
+            quit()
+            
+        SCREEN.fill((255, 255, 255))
+        
         player.draw(SCREEN)
         player.update(userInput)
+        
+        # Render 'Highest Points:' Text
+        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
+        SCREEN.blit(highest_point_text, (886, 55))  # Location
 
-        # Show Highest pts
-        hp_text = font.render("Highest Point: " + str(highest_points), True, (0, 0, 0))
-        SCREEN.blit(hp_text, (886, 55))
-
-        # Add Dog obstacle
         if len(obstacles) == 0:
-            if random.randint(0, 2) == 0:
+            obstacle_type = random.randint(0, 3)
+            if obstacle_type == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
-            elif random.randint(0, 2) == 1:
+            elif obstacle_type == 1:
                 obstacles.append(LargeCactus(LARGE_CACTUS))
-            elif random.randint(0, 2) == 2:
+            elif obstacle_type == 2:
                 obstacles.append(Bird(BIRD))
-            elif random.randint(0, 2) == 3:
+            elif obstacle_type == 3:
                 obstacles.append(Dog(DOG))
             elif random.randint(0, 2) == 4:
                 obstacles.append(Banana(BANANA))
@@ -316,10 +341,9 @@ def main():
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.Cat_rect.colliderect(obstacle.rect):
-                # Check if obstacle is a Dog
-                if isinstance(obstacle, Dog):
-                    points -= 50        # Lose 50 pts
-                    obstacles.remove(obstacle)  # Remove DOG in obstacle list >> DIFFERENT Condition
+                if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
+                    points -= 100  # Lose 100 pts
+                    obstacles.remove(obstacle)  # Remove the dog after losing points
                 if isinstance(obstacle, Banana):
                 # Check if obstacle is a Banana > Chaser system
                     if chaser_start_time is None or pygame.time.get_ticks() - chaser_start_time > 7000:
@@ -344,16 +368,11 @@ def main():
         cloud.draw(SCREEN)
         cloud.update()
 
-        # Chaser's Logic , Check if it is activation or not
-        # !!!!! NEED MORE CHECK TO ADD !!!!!
-        if chaser_start_time is not None:
-            chaser.x_pos += 4.5 if pygame.time.get_ticks() < chaser_end_time else -4.5
-            chaser.update()
-            chaser.draw(SCREEN)
-
         score()
+
         clock.tick(30)
         pygame.display.update()
+
 
 def menu(death_count):
     global points
