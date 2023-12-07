@@ -3,12 +3,16 @@ import os
 import random
 pygame.init()
 
-# Create Font Object
-font = pygame.font.Font(None,36)
-
+# Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+### Highest Score
+points = 0 
+highest_point = 0  
+# Create Font Object
+font = pygame.font.Font(None,36)
 
 RUNNING = [pygame.image.load(os.path.join("Assets/Cat", "CatRun1.png")),
            pygame.image.load(os.path.join("Assets/Cat", "CatRun2.png"))]
@@ -198,58 +202,16 @@ class Bird(Obstacle):
 # Add Obstacle Dog
 class Dog(Obstacle):
     def __init__(self, image):
-        self.type = random.randint(0, 2)
+        self.type = 0
         super().__init__(image, self.type)
         self.rect.y = 325
-        self.motion_index = 0
-        self.direction = 1
-        self.speed = 2
+        self.index = 0
 
-    def update(self):
-        global points 
-        self.rect.x -= game_speed
-        if self.rect.x < -self.rect.width:
-            obstacles.pop()
-            points -= 50  # lose 50 pts
-
-        self.rect.x += self.speed * self.direction
-
-        if self.motion_index >= 15:
-            self.motion_index = 0
-            self.direction *= -1
-
-        if self.direction == 1:
-            self.image = self.image[self.motion_index // 5]  # When it move left > Dog1, Dog2
-        # Dog List // 5 -> return 0 or 1  >> [Dog1.png, Dog2.png ...] 
-            # IF YOU WANT TO CHANGE, CHANGE LIST ORDER
-        else:
-            self.image = self.image[self.motion_index // 5 + 2]  # When it move right > Dog3, Dog4
-
-        self.motion_index += 1
-
-# class Dog(Obstacle):
-#     def __init__(self, image):
-#         self.type = 0
-#         super().__init__(image, self.type)
-#         self.rect.y = 325
-#         self.index = 0
-
-#         self.direction = 1  # 1 for RIGHT, -1 for LEFT
-#         self.distance = 0  # Distance moved
-#         self.initial_x = self.rect.x  # Store the initial x-pos
-
-#     def update(self):
-#         if self.distance >= 20:  # Reverse direction after moving 10
-#             self.direction *= -1
-#             self.distance = 0
-#         self.rect.x += self.direction
-#         self.distance += 1
-
-#     def draw(self, SCREEN):
-#         if self.index >= 9:
-#             self.index = 0
-#         SCREEN.blit(self.image[self.index//5], self.rect)
-#         self.index += 1
+    def draw(self, SCREEN):
+        if self.index >= 9:
+            self.index = 0
+        SCREEN.blit(self.image[self.index//5], self.rect)
+        self.index += 1
 
 # Add Obstacle Banana
 class Banana(Obstacle):
