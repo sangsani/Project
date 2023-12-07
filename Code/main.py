@@ -298,6 +298,7 @@ def main():
             if player.Cat_rect.colliderect(obstacle.rect):
                 if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
                     points -= 200  # Lose 100 pts
+                    highest_point -= 200
                     obstacles.remove(obstacle)  # Remove the dog after
 
                 if isinstance(obstacle, Banana):
@@ -310,7 +311,7 @@ def main():
                     if chaser_start_time is not None:
                         chaser.update()
                         chaser.draw(SCREEN)
-                    #################################
+
                     if pygame.time.get_ticks() - chaser_start_time > 7000:
                         chaser_start_time = None
                         chaser_hit_count = 0
@@ -334,7 +335,6 @@ def main():
 
         clock.tick(30)
         pygame.display.update()
-
 
 def menu(death_count):
     global points
