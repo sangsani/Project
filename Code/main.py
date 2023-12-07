@@ -124,13 +124,13 @@ class Chaser:
         self.image = image
         self.x = 0
         self.y = 325  # Location
-        self.speed = -game_speed  # Speed
+        self.speed = -game_speed + 10  # Speed
         self.index = 0
 
     def update(self):
         self.x += self.speed
         if self.x == (SCREEN_WIDTH // 2 - 10):
-            self.speed = game_speed  # - Speed
+            self.speed = game_speed - 10  # - Speed
             self.x = 0
 
     def draw(self, SCREEN):
