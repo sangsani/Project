@@ -123,7 +123,7 @@ class Cat:
 
 # Add Chaser
 class Chaser:
-    def __init__(self):
+    def __init__(self, img_path):
         self.x = SCREEN_WIDTH + random.randint(800, 1000)
         self.y = random.randint(50, 100)
         self.image = CLOUD
@@ -361,6 +361,7 @@ def menu(death_count):
         font = pygame.font.Font('freesansbold.ttf', 30)
 
         if death_count == 0:
+            SCREEN.blit(START[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
             text = font.render("Press any Key to Start", True, (0, 0, 0))
         elif death_count > 0:
             SCREEN.blit(DEAD[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
@@ -377,7 +378,6 @@ def menu(death_count):
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
-        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
