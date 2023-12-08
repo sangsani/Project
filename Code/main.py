@@ -19,6 +19,10 @@ RUNNING = [pygame.image.load(os.path.join("Assets/Cat", "CatRun1.png")),
 JUMPING = pygame.image.load(os.path.join("Assets/Cat", "CatJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Cat", "CatDuck1.png")),
            pygame.image.load(os.path.join("Assets/Cat", "CatDuck2.png"))]
+# Add IMG
+DEAD = [pygame.image.load(os.path.join("Assets/Cat", "CatDead.png"))]
+START = [pygame.image.load(os.path.join("Assets/Cat", "CatStart.png"))]
+
 
 SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
                 pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
@@ -119,24 +123,38 @@ class Cat:
 
 # Add Chaser
 class Chaser:
-    def __init__(self, image):
-        self.image = image
-        self.x = 0
-        self.y = 280  # Location
-        self.speed = -game_speed + 10  # Speed
-        self.index = 0
+    def __init__(self):
+        self.x = SCREEN_WIDTH + random.randint(800, 1000)
+        self.y = random.randint(50, 100)
+        self.image = CLOUD
+        self.width = self.image.get_width()
 
     def update(self):
-        self.x += self.speed
-        if self.x == (SCREEN_WIDTH // 2 - 10):
-            self.speed = game_speed - 10  # - Speed
-            self.x = 0
+        self.x -= game_speed
+        if self.x < -self.width:
+            self.x = SCREEN_WIDTH + random.randint(2500, 3000)
+            self.y = random.randint(50, 100)
 
     def draw(self, SCREEN):
-        if self.index >= 9:
-            self.index = 0
-        SCREEN.blit(self.image[self.index//5], (self.x, self.y))
-        self.index += 1
+        SCREEN.blit(self.image, (self.x, self.y))
+    # def __init__(self, image):
+    #     self.image = image
+    #     self.x = 0
+    #     self.y = 280  # Location
+    #     self.speed = -game_speed + 10  # Speed
+    #     self.index = 0
+
+    # def update(self):
+    #     self.x += self.speed
+    #     if self.x == (SCREEN_WIDTH // 2 - 10):
+    #         self.speed = game_speed - 10  # - Speed
+    #         self.x = 0
+
+    # def draw(self, SCREEN):
+    #     if self.index >= 9:
+    #         self.index = 0
+    #     SCREEN.blit(self.image[self.index//5], (self.x, self.y))
+    #     self.index += 1
 
 class Cloud:
     def __init__(self):
@@ -345,6 +363,7 @@ def menu(death_count):
         if death_count == 0:
             text = font.render("Press any Key to Start", True, (0, 0, 0))
         elif death_count > 0:
+            SCREEN.blit(DEAD[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
             text = font.render("Press any Key to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
@@ -353,6 +372,8 @@ def menu(death_count):
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
+            # Get IMG
+
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
@@ -363,4 +384,5 @@ def menu(death_count):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main()
+
 menu(death_count=0)
