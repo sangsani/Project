@@ -126,15 +126,17 @@ class Chaser:
     def __init__(self):
         self.image = CHASER
         self.index = 0
-        self.x = 0
-        self.y = 80
+        self.x = -20
+        self.y = 230
+        self.last_update = pygame.time.get_ticks()  # Add this line
+        self.animation_interval = 150  # Add this line (500ms)
 
     def update(self):
-        self.index = (self.index + 1) % 2  # Update index to be 0 or 1
-        if self.y <= 80:
-            self.y += 5
-        if self.y > 100:
-            self.y -= 5
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.animation_interval:  # Check if it's time to update
+            self.index = (self.index + 1) % 2  # Update index to be 0 or 1
+            self.last_update = now  # Update the last update time
+
 
     def draw(self, SCREEN):
         # Use self.index to select image ANIMATION
