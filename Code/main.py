@@ -51,7 +51,7 @@ BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
 
 class Cat:
     X_POS = 80
-    Y_POS = 280
+    Y_POS = 300
     Y_POS_DUCK = 330
     JUMP_VEL = 8.5
 
@@ -215,7 +215,7 @@ class Dog(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 310
+        self.rect.y = 330
         self.index = 0
 
     def draw(self, SCREEN):
@@ -361,10 +361,10 @@ def menu(death_count):
         font = pygame.font.Font('freesansbold.ttf', 30)
 
         if death_count == 0:
-            SCREEN.blit(START[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
+            SCREEN.blit(START[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 160))
             text = font.render("Press any Key to Start", True, (0, 0, 0))
         elif death_count > 0:
-            SCREEN.blit(DEAD[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
+            SCREEN.blit(DEAD[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 220))
             text = font.render("Press any Key to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
