@@ -27,8 +27,8 @@ BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
         pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
 # Add Churu Item IMG 1
-CHURU = [pygame.image.load(os.path.join("Assets/Item/Churu", "CatRun1.png")),
-           pygame.image.load(os.path.join("Assets/Item/Churu", "CatRun2.png"))]
+CHURU = [pygame.image.load(os.path.join("Assets/Churu", "Churu1.png")),
+           pygame.image.load(os.path.join("Assets/Churu", "Churu2.png"))]
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
@@ -261,50 +261,56 @@ def main():
         x_pos_bg -= game_speed
 
     while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                elif event.type == pygame.USEREVENT:
+                    player.invincible = False # Invincible Statement False
+                    
+            userInput = pygame.key.get_pressed()
+
+            ## Press Q or ENTER to end
+            if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
+                pygame.quit()
+                quit()
+
+            # Press C to use Churu >> set statement None
+            if userInput[pygame.K_c] and churu is not None:
+                player.become_invincible()
+                churu = None
                 
-        userInput = pygame.key.get_pressed()
-
-        ## Press Q or ENTER to end
-        if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
-            pygame.quit()
-            quit()
+            SCREEN.fill((255, 255, 255))
             
-        SCREEN.fill((255, 255, 255))
-        
-        player.draw(SCREEN)
-        player.update(userInput)
-        
-        # Render 'Highest Points:' Text
-        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
-        SCREEN.blit(highest_point_text, (886, 55))  # Location
+            player.draw(SCREEN)
+            player.update(userInput)
+            
+            # Render 'Highest Points:' Text
+            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
+            SCREEN.blit(highest_point_text, (886, 55))  # Location
 
-        # Add Dog obstacle
-        if len(obstacles) == 0:
-            if random.randint(0, 2) == 0:
-                obstacles.append(SmallCactus(SMALL_CACTUS))
-            elif random.randint(0, 2) == 1:
-                obstacles.append(LargeCactus(LARGE_CACTUS))
-            elif random.randint(0, 2) == 2:
-                obstacles.append(Bird(BIRD))
+            if len(obstacles) == 0:
+                if random.randint(0, 2) == 0:
+                    obstacles.append(SmallCactus(SMALL_CACTUS))
+                elif random.randint(0, 2) == 1:
+                    obstacles.append(LargeCactus(LARGE_CACTUS))
+                elif random.randint(0, 2) == 2:
+                    obstacles.append(Bird(BIRD))
 
-        for obstacle in obstacles:
-            obstacle.draw(SCREEN)
-            obstacle.update()
-            if player.Cat_rect.colliderect(obstacle.rect):
-                    pygame.time.delay(2000)
-                    death_count += 1
-                    menu(death_count)
-        background()
+            for obstacle in obstacles:
+                obstacle.draw(SCREEN)
+                obstacle.update()
+                if player.Cat_rect.colliderect(obstacle.rect):
+                        pygame.time.delay(2000)
+                        death_count += 1
+                        menu(death_count)
+            background()
 
-        cloud.draw(SCREEN)
-        cloud.update()
+            cloud.draw(SCREEN)
+            cloud.update()
 
-        score()
-        clock.tick(30)
-        pygame.display.update()
+            score()
+            clock.tick(30)
+            pygame.display.update()
 
 def menu(death_count):
     global points
