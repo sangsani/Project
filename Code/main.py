@@ -21,8 +21,9 @@ DUCKING = [pygame.image.load(os.path.join("Assets/Cat", "CatDuck1.png")),
            pygame.image.load(os.path.join("Assets/Cat", "CatDuck2.png"))]
 # Add IMG
 DEAD = [pygame.image.load(os.path.join("Assets/Cat", "CatDead.png"))]
-START = [pygame.image.load(os.path.join("Assets/Cat", "CatStart.png"))]
 
+END = [pygame.image.load(os.path.join("Assets/Cat", "CatEnd.png"))]
+START = [pygame.image.load(os.path.join("Assets/Cat", "CatStart.png"))]
 
 SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
                 pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
@@ -123,38 +124,22 @@ class Cat:
 
 # Add Chaser
 class Chaser:
-    def __init__(self, img_path):
-        self.x = SCREEN_WIDTH + random.randint(800, 1000)
-        self.y = random.randint(50, 100)
-        self.image = CLOUD
-        self.width = self.image.get_width()
+    def __init__(self):
+        self.image = CHASER
+        self.index = 0
+        self.x = 0
+        self.y = 80
 
     def update(self):
-        self.x -= game_speed
-        if self.x < -self.width:
-            self.x = SCREEN_WIDTH + random.randint(2500, 3000)
-            self.y = random.randint(50, 100)
+        self.index = (self.index + 1) % 2  # Update index to be 0 or 1
+        if self.y <= 80:
+            self.y += 5
+        if self.y > 100:
+            self.y -= 5
 
     def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.x, self.y))
-    # def __init__(self, image):
-    #     self.image = image
-    #     self.x = 0
-    #     self.y = 280  # Location
-    #     self.speed = -game_speed + 10  # Speed
-    #     self.index = 0
-
-    # def update(self):
-    #     self.x += self.speed
-    #     if self.x == (SCREEN_WIDTH // 2 - 10):
-    #         self.speed = game_speed - 10  # - Speed
-    #         self.x = 0
-
-    # def draw(self, SCREEN):
-    #     if self.index >= 9:
-    #         self.index = 0
-    #     SCREEN.blit(self.image[self.index//5], (self.x, self.y))
-    #     self.index += 1
+        # Use self.index to select image ANIMATION
+        SCREEN.blit(self.image[self.index], (self.x, self.y))  
 
 class Cloud:
     def __init__(self):
@@ -246,7 +231,7 @@ def main():
     death_count = 0
 
     # Chaser System
-    chaser = Chaser(CHASER)
+    chaser = Chaser()
     chaser_start_time = None
     chaser_hit_count = 0
 
@@ -324,11 +309,9 @@ def main():
 
                     if chaser_start_time is None:
                         chaser_start_time = pygame.time.get_ticks()
-
-                    if chaser_start_time is not None:
-                        chaser.update()
                         chaser.draw(SCREEN)
-
+                        chaser.update()
+                        
                     if pygame.time.get_ticks() - chaser_start_time > 7000:
                         chaser_start_time = None
                         chaser_hit_count = 0
@@ -361,10 +344,12 @@ def menu(death_count):
         font = pygame.font.Font('freesansbold.ttf', 30)
 
         if death_count == 0:
-            SCREEN.blit(START[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 160))
+            # Add START IMG
+            SCREEN.blit(START[0], (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 160))
             text = font.render("Press any Key to Start", True, (0, 0, 0))
         elif death_count > 0:
-            SCREEN.blit(DEAD[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 220))
+            # Add END IMG
+            SCREEN.blit(END[0], (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 230))
             text = font.render("Press any Key to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
@@ -373,15 +358,16 @@ def menu(death_count):
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
-            # Get IMG
 
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
         pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                quit()
             if event.type == pygame.KEYDOWN:
                 main()
 
