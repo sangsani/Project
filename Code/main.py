@@ -121,7 +121,6 @@ class Cat:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
-
 # Add Chaser
 class Chaser:
     def __init__(self):
@@ -208,7 +207,6 @@ class Dog(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
-
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
@@ -234,6 +232,7 @@ def main():
     chaser = Chaser()
     chaser_start_time = None
     chaser_hit_count = 0
+    chaser_active = False
 
     def score():
         global points, game_speed, highest_point
@@ -306,25 +305,41 @@ def main():
                 if isinstance(obstacle, Banana):
                     chaser_hit_count += 1
                     obstacles.remove(obstacle)  # Remove the Banana after
-
+                    
+                    chaser_active = True
                     if chaser_start_time is None:
                         chaser_start_time = pygame.time.get_ticks()
-                        chaser.draw(SCREEN)
-                        chaser.update()
-                        
-                    if pygame.time.get_ticks() - chaser_start_time > 7000:
-                        chaser_start_time = None
-                        chaser_hit_count = 0
-
-                    if chaser_hit_count == 2:
-                        pygame.time.delay(800)
-                        death_count += 1
-                        menu(death_count)
 
                 else:
                     pygame.time.delay(800)
                     death_count += 1
                     menu(death_count)
+
+        if chaser_active:
+            chaser.update()
+            chaser.draw(SCREEN)
+
+            if pygame.time.get_ticks() - chaser_start_time > 7000:
+                chaser_active = False
+                chaser_start_time = None
+                chaser_hit_count = 0
+
+            if chaser_hit_count == 2:
+                pygame.time.delay(1500)
+                death_count += 1
+                menu(death_count)
+
+                    # if pygame.time.get_ticks() - chaser_start_time <= 7000:
+                    #     chaser.update()
+                    #     chaser.draw(SCREEN)
+                    # if pygame.time.get_ticks() - chaser_start_time > 7000:
+                    #     chaser_start_time = None
+                    #     chaser_hit_count = 0
+
+                    # if chaser_hit_count == 2:
+                    #     pygame.time.delay(1500)
+                    #     death_count += 1
+                    #     menu(death_count)
 
         background()
 
