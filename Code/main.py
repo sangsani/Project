@@ -3,12 +3,16 @@ import os
 import random
 pygame.init()
 
-# Create Font Object
-font = pygame.font.Font(None,36)
-
+# Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+### Highest Score
+points = 0 
+highest_point = 0  
+# Create Font Object
+font = pygame.font.Font(None,36)
 
 RUNNING = [pygame.image.load(os.path.join("Assets/Cat", "CatRun1.png")),
            pygame.image.load(os.path.join("Assets/Cat", "CatRun2.png"))]
@@ -26,9 +30,10 @@ LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.pn
 BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
         pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
-# Add Churu Item IMG 1
+# Add Churu Item IMG 2
 CHURU = [pygame.image.load(os.path.join("Assets/Churu", "Churu1.png")),
            pygame.image.load(os.path.join("Assets/Churu", "Churu2.png"))]
+STAR =pygame.image.load(os.path.join("Assets/Other", "Star.png"))
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
@@ -55,6 +60,15 @@ class Cat:
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
 
+        # Add Churu effect
+        self.churu_active = False
+        self.churu_start_time = 0
+
+    # Add invincible effect
+    def become_invincible(self):
+        self.churu_active = True
+        self.churu_start_time = pygame.time.get_ticks()
+
     def update(self, userInput):
         if self.Cat_duck:
             self.duck()
@@ -78,6 +92,14 @@ class Cat:
             self.Cat_duck = False
             self.Cat_run = True
             self.Cat_jump = False
+        # Add incincible eccect When press C
+        elif userInput[pygame.K_c] and not self.churu_active:
+            self.become_invincible()
+        # Check if Churu effect is still active
+        if self.churu_active:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.churu_start_time > 5000:  # 5000 milliseconds (5 seconds)
+                self.churu_active = False
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
@@ -106,25 +128,29 @@ class Cat:
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
 
 # Add Item Churu
+# Add Item Churu
 class Churu:
-    def __init__(self, image):
-        self.images = image
-        self.image = self.images[0]
-        self.rect = self.image.get_rect()
-        self.rect.x = 0  # Churu Location
-        self.rect.y = 500  # Churu Location
+    def __init__(self):
+        self.image = CHURU[0]
         self.index = 0
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 500
         self.x_pos = 0
+        self.churu_active = False
 
     def update(self):
         if self.index >= 10:
             self.index = 0
-        self.image = self.images[self.index // 5]
+        self.image = self.image[self.index // 5]
         self.index += 1
         self.rect.x -= self.x_pos
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.rect.x, self.rect.y))
+        # Draw Star
+        if self.churu_active:
+            SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
 
 class Cloud:
     def __init__(self):
@@ -179,46 +205,10 @@ class Bird(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
-# Add Obstacle Dog
-class Dog(Obstacle):
-    def __init__(self, image):
-        self.type = random.randint(0, 2)
-        super().__init__(image, self.type)
-        self.rect.y = 325
-        self.motion_index = 0
-        self.direction = 1
-        self.speed = 2
 
-    def update(self):
-        global points 
-        self.rect.x -= game_speed
-        if self.rect.x < -self.rect.width:
-            obstacles.pop()
-            points -= 50  # lose 50 pts
-
-        self.rect.x += self.speed * self.direction
-
-        if self.motion_index >= 15:
-            self.motion_index = 0
-            self.direction *= -1
-
-        if self.direction == 1:
-            self.image = self.image[self.motion_index // 5]  # When it move left > Dog1, Dog2
-        # Dog List // 5 -> return 0 or 1  >> [Dog1.png, Dog2.png ...] 
-            # IF YOU WANT TO CHANGE, CHANGE LIST ORDER
-        else:
-            self.image = self.image[self.motion_index // 5 + 2]  # When it move right > Dog3, Dog4
-
-        self.motion_index += 1
-# Add Obstacle Banana
-class Banana(Obstacle):
-    def __init__(self, image):
-        self.type = random.randint(0, 2)
-        super().__init__(image, self.type)
-        self.rect.y = 325
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -230,6 +220,8 @@ def main():
     font = pygame.font.Font('freesansbold.ttf', 20)
     obstacles = []
     death_count = 0
+    # Initialize churu
+    churu = Churu()
 
     def score():
         global points, game_speed, highest_point
@@ -241,9 +233,9 @@ def main():
         if points > highest_point:
             highest_point = points
         
-        ## Give Churu when pts get 500
-        if points % 500 == 0:
-            churu = Churu(CHURU)
+        ## Give Churu when pts get 500 (100 in test)
+        if points % 100 == 0:
+            churu.churu_active = True
             
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
@@ -299,10 +291,10 @@ def main():
             for obstacle in obstacles:
                 obstacle.draw(SCREEN)
                 obstacle.update()
-                if player.Cat_rect.colliderect(obstacle.rect):
-                        pygame.time.delay(2000)
-                        death_count += 1
-                        menu(death_count)
+                if not player.churu_active and player.Cat_rect.colliderect(obstacle.rect):
+                    pygame.time.delay(2000)
+                    death_count += 1
+                    menu(death_count)
             background()
 
             cloud.draw(SCREEN)
