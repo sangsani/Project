@@ -219,7 +219,7 @@ def main():
         ## Give Churu when pts get 500 (100 in test)
         # Make player get only 1 churu in item
         if points % 100 == 0:
-            churu_value += 1
+            churu_value =+ 1
             if churu_value > 1:
                 churu_value = 1
             churu.update()  
@@ -283,13 +283,10 @@ def main():
                 obstacle.draw(SCREEN)
                 obstacle.update()
 
-                if player.Cat_rect.colliderect(obstacle.rect):
-                    if player.invincible:
-                        pass
-                    else: 
-                        pygame.time.delay(2000)
-                        death_count += 1
-                        menu(death_count)
+                if player.Cat_rect.colliderect(obstacle.rect): 
+                    pygame.time.delay(2000)
+                    death_count += 1
+                    menu(death_count)
 
             background()
 
