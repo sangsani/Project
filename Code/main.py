@@ -290,8 +290,8 @@ def main():
             player.update(userInput)
             
             # Render 'Highest Points:' Text
-            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
-            SCREEN.blit(highest_point_text, (886, 55))  # Location
+            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
+            SCREEN.blit(highest_point_text, (873, 55))  # Location
 
             if len(obstacles) == 0:
                 if random.randint(0, 2) == 0:
@@ -335,8 +335,8 @@ def menu(death_count):
             text = font.render("Press any Key to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
-            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
-            SCREEN.blit(highest_point_text, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 80))  # Set Location
+            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
+            SCREEN.blit(highest_point_text, (SCREEN_WIDTH // 2 - 140, SCREEN_HEIGHT // 2 + 80))  # Set Location
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
