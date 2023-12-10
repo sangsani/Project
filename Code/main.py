@@ -48,26 +48,11 @@ class Churu:
         self.last_update = pygame.time.get_ticks()  # Add this line
         self.animation_interval = 150  # Add this line (500ms)
 
-        # Check Active 
-        self.churu_active = False
-
     def update(self):
-        global churu_value
-
         now = pygame.time.get_ticks()
         if now - self.last_update > self.animation_interval:  # Check if it's time to update
             self.index = (self.index + 1) % 2  # Update index to be 0 or 1
             self.last_update = now  # Update the last update time
-
-        if points > 100:    # Make it active
-            churu_value += 1
-
-            # Make Churu in 1
-            churu_value = min(churu_value, 1)
-
-            # Activate Churu if churu_value is 1
-            if churu_value == 1:
-                self.churu_active = True
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.index], (self.x, self.y))  
@@ -98,16 +83,6 @@ class Cat:
         self.Cat_rect.x = self.X_POS
         self.Cat_rect.y = self.Y_POS
 
-        # Add Churu effect
-        self.churu_active = False
-        self.churu_start_time = None
-
-    # Add invincible effect
-    def become_invincible(self):
-        churu.update()  
-        churu.draw(SCREEN)
-        self.churu_start_time = pygame.time.get_ticks()
-
     def update(self, userInput):
         if self.Cat_duck:
             self.duck()
@@ -131,17 +106,6 @@ class Cat:
             self.Cat_duck = False
             self.Cat_run = True
             self.Cat_jump = False
-
-        # Add incincible eccect When press C
-        elif userInput[pygame.K_c] and churu.churu_active:
-            self.become_invincible()
-
-        # Check if Churu effect is still active
-        if self.churu_active:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.churu_start_time > 5000:  # 5 sec
-                self.churu_active = False
-                self.churu_start_time = None
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
@@ -223,7 +187,6 @@ class Bird(Obstacle):
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
 
-
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu
     run = True
@@ -240,6 +203,8 @@ def main():
 
     # Initialize churu
     churu = Churu()
+    churu_value = 0
+    churu_start_time = None
 
     def score():
         global points, game_speed, highest_point
@@ -251,9 +216,14 @@ def main():
         if points > highest_point:
             highest_point = points
         
-        # ## Give Churu when pts get 500 (100 in test)
-        # if points % 100 == 0:
-        #     churu.churu_active = True
+        ## Give Churu when pts get 500 (100 in test)
+        # Make player get only 1 churu in item
+        if points % 100 == 0:
+            churu_value += 1
+            if churu_value > 1:
+                churu_value = 1
+            churu.update()  
+            churu.draw(SCREEN)
             
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
@@ -275,7 +245,8 @@ def main():
                 if event.type == pygame.QUIT:
                     run = False
                 elif event.type == pygame.USEREVENT:
-                    player.invincible = False # Invincible Statement False
+                    # Invincible Statement False
+                    player.invincible = False 
                     
             userInput = pygame.key.get_pressed()
 
@@ -283,6 +254,13 @@ def main():
             if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
                 pygame.quit()
                 quit()
+
+            ## Press C to use Item
+            if userInput[pygame.K_c] and churu_value == 1:
+                current_time = pygame.time.get_ticks()
+                if current_time - player.churu_start_time > 5000:  # 5 sec
+                    player.invincible = False
+                    player.churu_start_time = None                
                 
             SCREEN.fill((255, 255, 255))
             
@@ -306,7 +284,7 @@ def main():
                 obstacle.update()
 
                 if player.Cat_rect.colliderect(obstacle.rect):
-                    if churu.churu_active:
+                    if player.invincible:
                         pass
                     else: 
                         pygame.time.delay(2000)
@@ -351,21 +329,3 @@ def menu(death_count):
             if event.type == pygame.KEYDOWN:
                 main()
 menu(death_count=0)
-
-# 1. Churu 코드
-# 	1) points 가 100점(예비) 넘어갈 때마다 churu += 1
-# 	2) churu > 1 이면 churu = 1 (1값으로 고정)
-# 	3) if churu == 1이면 churu_active = True로 변환
-# 	4) churu_actvie == True면 
-# 	    Churu를 화면 좌측 하단에 나타나게함 (애니메이션)
-
-# 2. Cat 코드 
-# 	1) 고양이가 무적으로 변하는 코드 추가 cat_invincible
-# 	2) churu_actvie == True 이고 
-# 	    C키를 누르면 5초 동안 cat_invincible 실행
-
-# 3. 2의 Cat 코드를 main에 추가
-
-# -----------------------------------------------------
-
-# 	3) 무적으로 변화하는 5초 동안 Star 표시를 고양이 위에 띄움
