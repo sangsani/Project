@@ -38,6 +38,32 @@ STAR =pygame.image.load(os.path.join("Assets/Other", "Star.png"))
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
 
+# Add Item Churu
+class Churu:
+    def __init__(self):
+        self.image = CHURU
+        self.index = 0
+        self.x = 0
+        self.y = 500
+        self.last_update = pygame.time.get_ticks()  # Add this line
+        self.animation_interval = 150  # Add this line (500ms)
+
+        # Check Active 
+        self.churu_active = False
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.animation_interval:  # Check if it's time to update
+            self.index = (self.index + 1) % 2  # Update index to be 0 or 1
+            self.last_update = now  # Update the last update time
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.image[self.index], (self.x, self.y))  
+
+        # # Draw Star When it Used 
+        # if self.churu_active:
+        #     SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
+
 class Cat:
     X_POS = 80
     Y_POS = 310
@@ -62,11 +88,15 @@ class Cat:
 
         # Add Churu effect
         self.churu_active = False
-        self.churu_start_time = 0
+        self.churu_start_time = None
+
+    if points % 100 == 0:
+         churu_active = True
 
     # Add invincible effect
     def become_invincible(self):
-        self.churu_active = True
+        churu.update()  
+        churu.draw(SCREEN)
         self.churu_start_time = pygame.time.get_ticks()
 
     def update(self, userInput):
@@ -92,14 +122,17 @@ class Cat:
             self.Cat_duck = False
             self.Cat_run = True
             self.Cat_jump = False
+
         # Add incincible eccect When press C
-        elif userInput[pygame.K_c] and not self.churu_active:
+        elif userInput[pygame.K_c] and self.churu_active == True:
             self.become_invincible()
+
         # Check if Churu effect is still active
-        if self.churu_active:
+        if self.churu_active == True:
             current_time = pygame.time.get_ticks()
-            if current_time - self.churu_start_time > 5000:  # 5000 milliseconds (5 seconds)
+            if current_time - self.churu_start_time > 5000:  # 5 sec
                 self.churu_active = False
+                self.churu_start_time = None
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
@@ -126,31 +159,6 @@ class Cat:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
-
-# Add Item Churu
-# Add Item Churu
-class Churu:
-    def __init__(self):
-        self.image = CHURU[0]
-        self.index = 0
-        self.rect = self.image.get_rect()
-        self.rect.x = 0
-        self.rect.y = 500
-        self.x_pos = 0
-        self.churu_active = False
-
-    def update(self):
-        if self.index >= 10:
-            self.index = 0
-        self.image = self.image[self.index // 5]
-        self.index += 1
-        self.rect.x -= self.x_pos
-
-    def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.rect.x, self.rect.y))
-        # Draw Star
-        if self.churu_active:
-            SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
 
 class Cloud:
     def __init__(self):
@@ -233,9 +241,9 @@ def main():
         if points > highest_point:
             highest_point = points
         
-        ## Give Churu when pts get 500 (100 in test)
-        if points % 100 == 0:
-            churu.churu_active = True
+        # ## Give Churu when pts get 500 (100 in test)
+        # if points % 100 == 0:
+        #     churu.churu_active = True
             
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
@@ -265,11 +273,6 @@ def main():
             if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
                 pygame.quit()
                 quit()
-
-            # Press C to use Churu >> set statement None
-            if userInput[pygame.K_c] and churu is not None:
-                player.become_invincible()
-                churu = None
                 
             SCREEN.fill((255, 255, 255))
             
