@@ -52,10 +52,22 @@ class Churu:
         self.churu_active = False
 
     def update(self):
+        global churu_value
+
         now = pygame.time.get_ticks()
         if now - self.last_update > self.animation_interval:  # Check if it's time to update
             self.index = (self.index + 1) % 2  # Update index to be 0 or 1
             self.last_update = now  # Update the last update time
+
+        if points > 100:    # Make it active
+            churu_value += 1
+
+            # Make Churu in 1
+            churu_value = min(churu_value, 1)
+
+            # Activate Churu if churu_value is 1
+            if churu_value == 1:
+                self.churu_active = True
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.index], (self.x, self.y))  
@@ -90,9 +102,6 @@ class Cat:
         self.churu_active = False
         self.churu_start_time = None
 
-    if points % 100 == 0:
-         churu_active = True
-
     # Add invincible effect
     def become_invincible(self):
         churu.update()  
@@ -124,11 +133,11 @@ class Cat:
             self.Cat_jump = False
 
         # Add incincible eccect When press C
-        elif userInput[pygame.K_c] and self.churu_active == True:
+        elif userInput[pygame.K_c] and churu.churu_active:
             self.become_invincible()
 
         # Check if Churu effect is still active
-        if self.churu_active == True:
+        if self.churu_active:
             current_time = pygame.time.get_ticks()
             if current_time - self.churu_start_time > 5000:  # 5 sec
                 self.churu_active = False
@@ -228,6 +237,7 @@ def main():
     font = pygame.font.Font('freesansbold.ttf', 20)
     obstacles = []
     death_count = 0
+
     # Initialize churu
     churu = Churu()
 
@@ -294,10 +304,15 @@ def main():
             for obstacle in obstacles:
                 obstacle.draw(SCREEN)
                 obstacle.update()
-                if not player.churu_active and player.Cat_rect.colliderect(obstacle.rect):
-                    pygame.time.delay(2000)
-                    death_count += 1
-                    menu(death_count)
+
+                if player.Cat_rect.colliderect(obstacle.rect):
+                    if churu.churu_active:
+                        pass
+                    else: 
+                        pygame.time.delay(2000)
+                        death_count += 1
+                        menu(death_count)
+
             background()
 
             cloud.draw(SCREEN)
@@ -336,3 +351,21 @@ def menu(death_count):
             if event.type == pygame.KEYDOWN:
                 main()
 menu(death_count=0)
+
+# 1. Churu 코드
+# 	1) points 가 100점(예비) 넘어갈 때마다 churu += 1
+# 	2) churu > 1 이면 churu = 1 (1값으로 고정)
+# 	3) if churu == 1이면 churu_active = True로 변환
+# 	4) churu_actvie == True면 
+# 	    Churu를 화면 좌측 하단에 나타나게함 (애니메이션)
+
+# 2. Cat 코드 
+# 	1) 고양이가 무적으로 변하는 코드 추가 cat_invincible
+# 	2) churu_actvie == True 이고 
+# 	    C키를 누르면 5초 동안 cat_invincible 실행
+
+# 3. 2의 Cat 코드를 main에 추가
+
+# -----------------------------------------------------
+
+# 	3) 무적으로 변화하는 5초 동안 Star 표시를 고양이 위에 띄움
