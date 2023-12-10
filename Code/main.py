@@ -204,7 +204,7 @@ def main():
     obstacles = []
     death_count = 0
 
-    # Initialize churu
+    # Churu System
     churu = Churu()
     churu_value = 0
     churu_start_time = None
@@ -250,8 +250,9 @@ def main():
                 quit()
 
             ## Give Churu when pts get 500 (100 in test)
+            # Make it not work when points == 0
             # Make player get only 1 churu in item
-            if points % 100 == 0 and churu_value < 1:
+            if points > 0 and points % 100 == 0 and churu_value < 1:
                 churu_value += 1
 
             if churu_value == 1:
