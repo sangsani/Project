@@ -43,8 +43,8 @@ class Churu:
     def __init__(self):
         self.image = CHURU
         self.index = 0
-        self.x = 0
-        self.y = 500
+        self.x = SCREEN_WIDTH // 2
+        self.y = SCREEN_HEIGHT // 2     # NEED TO CHANGE
         self.last_update = pygame.time.get_ticks()  # Add this line
         self.animation_interval = 150  # Add this line (500ms)
 
