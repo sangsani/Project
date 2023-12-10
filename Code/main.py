@@ -251,12 +251,13 @@ def main():
 
             ## Give Churu when pts get 500 (100 in test)
             # Make player get only 1 churu in item
-            if points % 100 == 0 and churu_value < 2:
+            if points % 100 == 0 and churu_value < 1:
                 churu_value += 1
 
             if churu_value == 1:
-                churu.update()  
                 churu.draw(SCREEN)
+                churu.update()  
+
                 ## Press C to use Item
                 if userInput[pygame.K_c] and churu_value == 1:
                     churu_start_time = pygame.time.get_ticks()
