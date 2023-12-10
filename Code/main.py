@@ -255,19 +255,22 @@ def main():
             ## Give Churu when pts get 500 (100 in test)
             # Make it not work when points == 0
             # Make player get only 1 churu in item
-            if points % 100 == 0 and points > 0 and churu_value < 1:
+            if points % 100 == 0 and points != 0 and churu_value < 1:
                 churu_value += 1
+            
+            if churu_value == 1:
                 churu.update()  
                 churu.draw(SCREEN)
 
-                ## Press C to use Item
-                if userInput[pygame.K_c] and churu_value == 1:
-                    churu_start_time = pygame.time.get_ticks()
-                    player.invincible = True
-                    
-                    if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 5000:  # 5 sec
-                            player.invincible = False
-                            player.churu_start_time = None
+            ## Press C to use Item
+            if userInput[pygame.K_c] and churu_value > 0:
+                churu_start_time = pygame.time.get_ticks()
+                player.invincible = True
+                churu_value -= 1
+
+            if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 5000:  # 5 sec
+                    player.invincible = False
+                    player.churu_start_time = None
                 
             SCREEN.fill((255, 255, 255))
             
