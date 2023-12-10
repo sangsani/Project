@@ -204,7 +204,7 @@ def main():
     # Initialize churu
     churu = Churu()
     churu_value = 0
-    churu_start_time = None
+    churu_start_time = 0
 
     def score():
         global points, game_speed, highest_point
@@ -215,15 +215,6 @@ def main():
         # Update HIGHTEST pts
         if points > highest_point:
             highest_point = points
-        
-        ## Give Churu when pts get 500 (100 in test)
-        # Make player get only 1 churu in item
-        if points % 100 == 0:
-            churu_value =+ 1
-            if churu_value > 1:
-                churu_value = 1
-            churu.update()  
-            churu.draw(SCREEN)
             
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
@@ -254,13 +245,22 @@ def main():
             if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
                 pygame.quit()
                 quit()
-
+            ## Give Churu when pts get 500 (100 in test)
+            # Make player get only 1 churu in item
+            if points % 100 == 0:
+                churu_value =+ 1
+                if churu_value > 1:
+                    churu_value = 1
+                churu.update()  
+                churu.draw(SCREEN)
             ## Press C to use Item
             if userInput[pygame.K_c] and churu_value == 1:
-                current_time = pygame.time.get_ticks()
-                if current_time - player.churu_start_time > 5000:  # 5 sec
-                    player.invincible = False
-                    player.churu_start_time = None                
+                churu_start_time = pygame.time.get_ticks()
+                player.invincible = True
+
+                if pygame.time.get_ticks() - churu_start_time > 7000:  # 5 sec
+                        player.invincible = False
+                        player.churu_start_time = None
                 
             SCREEN.fill((255, 255, 255))
             
@@ -284,9 +284,12 @@ def main():
                 obstacle.update()
 
                 if player.Cat_rect.colliderect(obstacle.rect): 
-                    pygame.time.delay(2000)
-                    death_count += 1
-                    menu(death_count)
+                    if player.invincible == True:
+                        pass
+                    else:
+                        pygame.time.delay(2000)
+                        death_count += 1
+                        menu(death_count)
 
             background()
 
