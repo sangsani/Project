@@ -241,6 +241,7 @@ class Dog(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
+        
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
