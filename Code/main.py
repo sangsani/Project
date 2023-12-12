@@ -191,7 +191,7 @@ class Bird(Obstacle):
         self.index += 1
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -208,12 +208,15 @@ def main():
     churu = Churu()
     churu_value = 0
     churu_start_time = None
+    churu_score = 100
 
     def score():
-        global points, game_speed, highest_point
+        global points, game_speed, highest_point, churu_score
         points += 1
         if points % 100 == 0:
             game_speed += 1
+            # Add Churu score higher
+            churu_score += 50
 
         # Update HIGHTEST pts
         if points > highest_point:
@@ -249,28 +252,25 @@ def main():
                 pygame.quit()
                 quit()
 
-            # Make it sure again
-            churu_value = 0
+            # Draw Churu on SCREEN
+            if churu_value == 1:
+                churu.draw(SCREEN)
 
             ## Give Churu when pts get 500 (100 in test)
             # Make it not work when points == 0
             # Make player get only 1 churu in item
-            if points % 100 == 0 and points != 0 and churu_value < 1:
-                churu_value += 1
+            if points % churu_score == 0 and points != 0:
+                churu_value = 1
             
-            if churu_value == 1:
-                churu.update()  
-                churu.draw(SCREEN)
-
             ## Press C to use Item
-            if userInput[pygame.K_c] and churu_value > 0:
+            if userInput[pygame.K_c] and churu_value == 1:
                 churu_start_time = pygame.time.get_ticks()
                 player.invincible = True
-                churu_value -= 1
 
-            if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 5000:  # 5 sec
-                    player.invincible = False
-                    player.churu_start_time = None
+            if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 4000:  # 4 sec
+                player.invincible = False
+                churu_start_time = None
+                churu_value = 0
                 
             SCREEN.fill((255, 255, 255))
             
