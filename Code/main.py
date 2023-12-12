@@ -50,7 +50,8 @@ CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
 # Add Churu Item IMG 2
 CHURU = [pygame.image.load(os.path.join("Assets/Churu", "Churu1.png")),
            pygame.image.load(os.path.join("Assets/Churu", "Churu2.png"))]
-# STAR =pygame.image.load(os.path.join("Assets/Other", "Star.png"))
+# Add Star IMG 1
+STAR = pygame.image.load(os.path.join("Assets/Other", "Star.png"))
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
@@ -77,6 +78,13 @@ class Churu:
         # # Draw Star When it Used 
         # if self.churu_active:
         #     SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
+# # Add Star IMG
+# class Star():
+#     def __init__(self, image):
+#         self.type = 0
+#         super().__init__(image, self.type)
+#         self.x = 80
+#         self.y = 50
 
 class Cat:
     X_POS = 80
@@ -91,6 +99,8 @@ class Cat:
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
+        # Add Star IMG
+        self.star_img = STAR
 
         self.Cat_duck = False
         self.Cat_run = True
@@ -110,6 +120,8 @@ class Cat:
             self.run()
         if self.Cat_jump:
             self.jump()
+        if self.invincible:
+            self.star()
 
         if self.step_index >= 10:
             self.step_index = 0
@@ -118,14 +130,23 @@ class Cat:
             self.Cat_duck = False
             self.Cat_run = False
             self.Cat_jump = True
+            ### Add to Get star() if invinsible is True
+            if self.invincible == True:
+                self.invincible = True
         elif userInput[pygame.K_DOWN] and not self.Cat_jump:
             self.Cat_duck = True
             self.Cat_run = False
             self.Cat_jump = False
+            ### Add to Get star() if invinsible is True
+            if self.invincible == True:
+                self.invincible = True
         elif not (self.Cat_jump or userInput[pygame.K_DOWN]):
             self.Cat_duck = False
             self.Cat_run = True
             self.Cat_jump = False
+            ### Add to Get star() if invinsible is True
+            if self.invincible == True:
+                self.invincible = True
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
@@ -150,9 +171,28 @@ class Cat:
             self.Cat_jump = False
             self.jump_vel = self.JUMP_VEL
 
+    def star(self, SCREEN):
+        self.image = self.star_img
+        self.x = 80
+        self.y = 50
+
+        if self.Cat_jump:
+            self.y -= self.jump_vel * 4
+            self.jump_vel -= 0.8
+        # if self.jump_vel < - self.JUMP_VEL:
+        #     self.Cat_jump = False
+        #     self.jump_vel = self.JUMP_VEL
+        if self.Cat_duck:
+            self.y = self.Y_POS_DUCK
+        
+        # Draw on SCREEN
+        SCREEN.blit(self.image, (self.x, self.y))
+
+
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
 
+    
 # Add Chaser
 class Chaser:
     def __init__(self):
@@ -241,7 +281,6 @@ class Dog(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
-        
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
