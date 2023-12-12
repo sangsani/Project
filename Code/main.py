@@ -249,7 +249,7 @@ class Banana(Obstacle):
         self.rect.y = 350
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score, highest_point_save
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -261,6 +261,9 @@ def main():
     font = pygame.font.Font('freesansbold.ttf', 20)
     obstacles = []
     death_count = 0
+
+    # Save Hightes Points
+    higehst_point_save = 0
 
     # Chaser System
     chaser = Chaser()
@@ -281,7 +284,7 @@ def main():
 
 
     def score():
-        global points, game_speed, highest_point
+        global points, game_speed, highest_point, churu_score
         points += 1
         if points % 100 == 0:
             game_speed += 1
@@ -349,11 +352,11 @@ def main():
         player.update(userInput)
         
         # Render 'Highest Points:' Text
-        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
-        SCREEN.blit(highest_point_text, (886, 55))  # Location
+        highest_point_text = font.render("Highest Points: " + str(higehst_point_save), True, (125, 125, 125))
+        SCREEN.blit(highest_point_text, (873, 55))  # Location
 
         if len(obstacles) == 0:
-            obstacle_type = random.randint(0, 5)  
+            obstacle_type = random.randint(0, 4)  
             if obstacle_type == 0:
                 obstacles.append(SmallCactus(SMALL_CACTUS))
             elif obstacle_type == 1:
@@ -362,14 +365,19 @@ def main():
                 obstacles.append(Bird(BIRD))
             elif obstacle_type == 3:
                 obstacles.append(Dog(DOG))
-            else:
+            elif obstacle_type == 4:
                 obstacles.append(Banana(BANANA))
 
         for obstacle in obstacles:
+            
             obstacle.draw(SCREEN)
             obstacle.update()
 
             if player.Cat_rect.colliderect(obstacle.rect):
+                
+                if player.invincible == True:
+                    continue
+                
                 if isinstance(obstacle, Dog):  # Check if the obstacle is a Dog
                     points -= 200  # Lose 100 pts
                     highest_point -= 200
@@ -383,9 +391,6 @@ def main():
                     if chaser_start_time is None:
                         chaser_start_time = pygame.time.get_ticks()
 
-                if player.invincible == True:
-                        pass
-
                 else:
                     pygame.time.delay(800)
                     death_count += 1
@@ -395,14 +400,15 @@ def main():
             chaser.update()
             chaser.draw(SCREEN)
 
-            if pygame.time.get_ticks() - chaser_start_time > 7000:
+            if pygame.time.get_ticks() - chaser_start_time > 5000:
                 chaser_active = False
                 chaser_start_time = None
                 chaser_hit_count = 0
 
             if chaser_hit_count == 2:
-                pygame.time.delay(1500)
+                pygame.time.delay(800)
                 death_count += 1
+                highest_point = highest_point_save
                 menu(death_count)
 
         background()
@@ -433,7 +439,7 @@ def menu(death_count):
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
             highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
-            SCREEN.blit(highest_point_text, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 80))  # Set Location
+            SCREEN.blit(highest_point_text, (SCREEN_WIDTH // 2 - 140, SCREEN_HEIGHT // 2 + 80))  # Set Location
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
