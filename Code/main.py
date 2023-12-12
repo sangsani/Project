@@ -50,7 +50,7 @@ CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
 # Add Churu Item IMG 2
 CHURU = [pygame.image.load(os.path.join("Assets/Churu", "Churu1.png")),
            pygame.image.load(os.path.join("Assets/Churu", "Churu2.png"))]
-STAR =pygame.image.load(os.path.join("Assets/Other", "Star.png"))
+# STAR =pygame.image.load(os.path.join("Assets/Other", "Star.png"))
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
