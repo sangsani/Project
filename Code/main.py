@@ -167,7 +167,7 @@ def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
     clock = pygame.time.Clock()
-    player = Catsaur()
+    player = Cat()
     cloud = Cloud()
     game_speed = 20
     x_pos_bg = 0
