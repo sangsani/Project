@@ -485,7 +485,6 @@ def main():
             if chaser_hit_count == 2:
                 pygame.time.delay(800)
                 death_count += 1
-                highest_point = highest_point_save
                 menu(death_count)
 
         background()
