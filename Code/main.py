@@ -47,8 +47,36 @@ BANANA = [pygame.image.load(os.path.join("Assets/Banana", "Banana1.png")),
 CHASER =[pygame.image.load(os.path.join("Assets/Chaser", "Chaser1.png")),
          pygame.image.load(os.path.join("Assets/Chaser", "Chaser2.png"))]
 
+# Add Churu Item IMG 2
+CHURU = [pygame.image.load(os.path.join("Assets/Churu", "Churu1.png")),
+           pygame.image.load(os.path.join("Assets/Churu", "Churu2.png"))]
+STAR =pygame.image.load(os.path.join("Assets/Other", "Star.png"))
+
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
+
+# Add Item Churu
+class Churu:
+    def __init__(self):
+        self.image = CHURU
+        self.index = 0
+        self.x = 80
+        self.y = 430     # NEED TO CHANGE
+        self.last_update = pygame.time.get_ticks()  # Add this line
+        self.animation_interval = 150  # Add this line (500ms)
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.animation_interval:  # Check if it's time to update
+            self.index = (self.index + 1) % 2  # Update index to be 0 or 1
+            self.last_update = now  # Update the last update time
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.image[self.index], (self.x, self.y))  
+
+        # # Draw Star When it Used 
+        # if self.churu_active:
+        #     SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
 
 class Cat:
     X_POS = 80
@@ -57,6 +85,9 @@ class Cat:
     JUMP_VEL = 8.5
 
     def __init__(self):
+        # Add init statement
+        self.invincible = False 
+
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
@@ -121,6 +152,7 @@ class Cat:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
+
 # Add Chaser
 class Chaser:
     def __init__(self):
@@ -217,7 +249,7 @@ class Banana(Obstacle):
         self.rect.y = 350
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -235,6 +267,18 @@ def main():
     chaser_start_time = None
     chaser_hit_count = 0
     chaser_active = False
+
+    # Churu System
+    churu = Churu()
+    churu_value = 0
+    churu_start_time = None
+    churu_score = 500
+
+    # Add Churu score higher when it go Faster
+    # if (game_speed % 1000) - 1 == 0:
+    #     churu_score += 500
+    ################ IT DOESN'T WROK?!################
+
 
     def score():
         global points, game_speed, highest_point
@@ -264,7 +308,11 @@ def main():
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False                
+                run = False
+            elif event.type == pygame.USEREVENT:
+                # Invincible Statement False
+                player.invincible = False 
+
         userInput = pygame.key.get_pressed()
 
         # Press Q or ENTER to end
@@ -272,13 +320,36 @@ def main():
             pygame.quit()
             quit()
 
-        SCREEN.fill((255, 255, 255))
+        SCREEN.fill((255, 255, 255))    # This line Location important
+            
+        # Draw Churu on SCREEN
+        if churu_value == 2:
+            churu.draw(SCREEN)
+            churu.update()
+    
+        ## Give Churu when pts get 500 (100 in test)
+        # Make it not work when points == 0
+        # Make player get only 1 churu in item
+        if points % churu_score == 0 and points != 0:
+            churu_value = 2
         
+        ## Press C to use Item
+        if userInput[pygame.K_c] and churu_value > 0:
+            churu_start_time = pygame.time.get_ticks()
+            player.invincible = True
+            churu_value = 1
+
+        # Churu Timer
+        if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 3000:  # 3 secs timer
+            player.invincible = False
+            churu_start_time = None
+            churu_value = 0
+
         player.draw(SCREEN)
         player.update(userInput)
         
         # Render 'Highest Points:' Text
-        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
+        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
         SCREEN.blit(highest_point_text, (886, 55))  # Location
 
         if len(obstacles) == 0:
@@ -312,6 +383,9 @@ def main():
                     if chaser_start_time is None:
                         chaser_start_time = pygame.time.get_ticks()
 
+                if player.invincible == True:
+                        pass
+
                 else:
                     pygame.time.delay(800)
                     death_count += 1
@@ -330,18 +404,6 @@ def main():
                 pygame.time.delay(1500)
                 death_count += 1
                 menu(death_count)
-
-                    # if pygame.time.get_ticks() - chaser_start_time <= 7000:
-                    #     chaser.update()
-                    #     chaser.draw(SCREEN)
-                    # if pygame.time.get_ticks() - chaser_start_time > 7000:
-                    #     chaser_start_time = None
-                    #     chaser_hit_count = 0
-
-                    # if chaser_hit_count == 2:
-                    #     pygame.time.delay(1500)
-                    #     death_count += 1
-                    #     menu(death_count)
 
         background()
 
@@ -370,7 +432,7 @@ def menu(death_count):
             text = font.render("Press any Key to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
-            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (0, 0, 0))
+            highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
             SCREEN.blit(highest_point_text, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 80))  # Set Location
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
