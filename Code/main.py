@@ -78,13 +78,6 @@ class Churu:
         # # Draw Star When it Used 
         # if self.churu_active:
         #     SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
-# # Add Star IMG
-# class Star():
-#     def __init__(self, image):
-#         self.type = 0
-#         super().__init__(image, self.type)
-#         self.x = 80
-#         self.y = 50
 
 class Cat:
     X_POS = 80
@@ -99,9 +92,7 @@ class Cat:
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
-        # Add Star IMG
-        self.star_img = STAR
-
+        
         self.Cat_duck = False
         self.Cat_run = True
         self.Cat_jump = False
@@ -120,9 +111,7 @@ class Cat:
             self.run()
         if self.Cat_jump:
             self.jump()
-        if self.invincible:
-            self.star()
-
+        
         if self.step_index >= 10:
             self.step_index = 0
 
@@ -130,24 +119,17 @@ class Cat:
             self.Cat_duck = False
             self.Cat_run = False
             self.Cat_jump = True
-            ### Add to Get star() if invinsible is True
-            if self.invincible == True:
-                self.invincible = True
+            
         elif userInput[pygame.K_DOWN] and not self.Cat_jump:
             self.Cat_duck = True
             self.Cat_run = False
             self.Cat_jump = False
-            ### Add to Get star() if invinsible is True
-            if self.invincible == True:
-                self.invincible = True
+            
         elif not (self.Cat_jump or userInput[pygame.K_DOWN]):
             self.Cat_duck = False
             self.Cat_run = True
             self.Cat_jump = False
-            ### Add to Get star() if invinsible is True
-            if self.invincible == True:
-                self.invincible = True
-
+            
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         self.Cat_rect = self.image.get_rect()
@@ -171,48 +153,77 @@ class Cat:
             self.Cat_jump = False
             self.jump_vel = self.JUMP_VEL
 
-    def star(self, SCREEN):
-        self.image = self.star_img
-        self.x = 80
-        self.y = 50
-
-        if self.Cat_jump:
-            self.y -= self.jump_vel * 4
-            self.jump_vel -= 0.8
-        # if self.jump_vel < - self.JUMP_VEL:
-        #     self.Cat_jump = False
-        #     self.jump_vel = self.JUMP_VEL
-        if self.Cat_duck:
-            self.y = self.Y_POS_DUCK
-        
-        # Draw on SCREEN
-        SCREEN.blit(self.image, (self.x, self.y))
-
-
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.Cat_rect.x, self.Cat_rect.y))
 
-    
-# Add Chaser
-class Chaser:
+# Add Star on Top
+class Star:
+    X_LOC = 80
+    Y_LOC = 250
+    Y_LOC_DUCK = 280
+    JUMP_HEIGHT = 8.5
+
     def __init__(self):
-        self.image = CHASER
-        self.index = 0
-        self.x = -20
-        self.y = 230
-        self.last_update = pygame.time.get_ticks()  # Add this line
-        self.animation_interval = 150  # Add this line (500ms)
+         # Add Star IMG
+        self.star_img = STAR
 
-    def update(self):
-        now = pygame.time.get_ticks()
-        if now - self.last_update > self.animation_interval:  # Check if it's time to update
-            self.index = (self.index + 1) % 2  # Update index to be 0 or 1
-            self.last_update = now  # Update the last update time
+        self.Star_duck = False
+        self.Star_run = True
+        self.Star_jump = False
 
+        self.jump_height = self.JUMP_HEIGHT
+        self.image = self.star_img
+        self.Star_rect = self.image.get_rect()
+        self.Star_rect.x = self.X_LOC
+        self.Star_rect.y = self.Y_LOC
+
+
+    def update(self, userInput):
+        if self.Star_duck:
+            self.StarDuck()
+        if self.Star_jump:
+            self.StarJump()
+        if self.Star_run:
+            self.StarRun()
+
+        if userInput[pygame.K_UP] and not self.Star_jump:
+            self.Star_duck = False
+            self.Star_run = False
+            self.Star_jump = True
+
+        elif userInput[pygame.K_DOWN] and not self.Star_jump:
+            self.Star_duck = True
+            self.Star_run = False
+            self.Star_jump = False
+
+        elif not (self.Star_jump or userInput[pygame.K_DOWN]):
+            self.Star_duck = False
+            self.Star_run = True
+            self.Star_jump = False
+
+    def StarDuck(self):
+        self.image = self.star_img
+        self.Star_rect = self.image.get_rect()
+        self.Star_rect.x = self.X_LOC
+        self.Star_rect.y = self.Y_LOC_DUCK
+
+    def StarRun(self):
+        self.image = self.star_img
+        self.Star_rect = self.image.get_rect()
+        self.Star_rect.x = self.X_LOC
+        self.Star_rect.y = self.Y_LOC
+
+    def StarJump(self):
+        self.image = self.star_img
+        if self.Star_jump:
+            self.Star_rect.y -= self.jump_height * 4
+            self.jump_height -= 0.8
+        if self.jump_height < - self.JUMP_HEIGHT:
+            self.Star_jump = False
+            self.jump_height = self.JUMP_HEIGHT
 
     def draw(self, SCREEN):
-        # Use self.index to select image ANIMATION
-        SCREEN.blit(self.image[self.index], (self.x, self.y))  
+        SCREEN.blit(self.image, (self.Star_rect.x, self.Star_rect.y))  
 
 class Cloud:
     def __init__(self):
@@ -281,15 +292,36 @@ class Dog(Obstacle):
             self.index = 0
         SCREEN.blit(self.image[self.index//5], self.rect)
         self.index += 1
+
 # Add Obstacle Banana
 class Banana(Obstacle):
     def __init__(self, image):
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
         self.rect.y = 350
+# Add Chaser
+class Chaser:
+    def __init__(self):
+        self.image = CHASER
+        self.index = 0
+        self.x = -20
+        self.y = 230
+        self.last_update = pygame.time.get_ticks()  # Add this line
+        self.animation_interval = 150  # Add this line (500ms)
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.animation_interval:  # Check if it's time to update
+            self.index = (self.index + 1) % 2  # Update index to be 0 or 1
+            self.last_update = now  # Update the last update time
+
+
+    def draw(self, SCREEN):
+        # Use self.index to select image ANIMATION
+        SCREEN.blit(self.image[self.index], (self.x, self.y))
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score, highest_point_save
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score
     run = True
     clock = pygame.time.Clock()
     player = Cat()
@@ -302,9 +334,6 @@ def main():
     obstacles = []
     death_count = 0
 
-    # Save Hightes Points
-    higehst_point_save = 0
-
     # Chaser System
     chaser = Chaser()
     chaser_start_time = None
@@ -316,6 +345,9 @@ def main():
     churu_value = 0
     churu_start_time = None
     churu_score = 500
+
+    # Star Image
+    star = Star()
 
     # Add Churu score higher when it go Faster
     # if (game_speed % 1000) - 1 == 0:
@@ -369,6 +401,11 @@ def main():
         if churu_value == 2:
             churu.draw(SCREEN)
             churu.update()
+
+        # Draw Star
+        if churu_value == 1:
+            star.draw(SCREEN)
+            star.update(userInput)
     
         ## Give Churu when pts get 500 (100 in test)
         # Make it not work when points == 0
@@ -392,7 +429,7 @@ def main():
         player.update(userInput)
         
         # Render 'Highest Points:' Text
-        highest_point_text = font.render("Highest Points: " + str(higehst_point_save), True, (125, 125, 125))
+        highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
         SCREEN.blit(highest_point_text, (873, 55))  # Location
 
         if len(obstacles) == 0:
