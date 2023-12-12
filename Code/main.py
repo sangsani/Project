@@ -43,8 +43,8 @@ class Churu:
     def __init__(self):
         self.image = CHURU
         self.index = 0
-        self.x = SCREEN_WIDTH // 2
-        self.y = SCREEN_HEIGHT // 2     # NEED TO CHANGE
+        self.x = 80
+        self.y = 430     # NEED TO CHANGE
         self.last_update = pygame.time.get_ticks()  # Add this line
         self.animation_interval = 150  # Add this line (500ms)
 
@@ -208,15 +208,13 @@ def main():
     churu = Churu()
     churu_value = 0
     churu_start_time = None
-    churu_score = 100
+    churu_score = 500
 
     def score():
         global points, game_speed, highest_point, churu_score
         points += 1
         if points % 100 == 0:
             game_speed += 1
-            # Add Churu score higher
-            churu_score += 50
 
         # Update HIGHTEST pts
         if points > highest_point:
@@ -237,6 +235,11 @@ def main():
             x_pos_bg = 0
         x_pos_bg -= game_speed
 
+    # Add Churu score higher when it go Faster
+    # if (game_speed % 1000) - 1 == 0:
+    #     churu_score += 500
+################ IT DOESN'T WROK?!################
+
     while run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -251,28 +254,30 @@ def main():
             if userInput[pygame.K_q] or userInput[pygame.K_RETURN]:
                 pygame.quit()
                 quit()
-
+            
+            SCREEN.fill((255, 255, 255))    # This line Location important
+            
             # Draw Churu on SCREEN
-            if churu_value == 1:
+            if churu_value == 2:
                 churu.draw(SCREEN)
+                churu.update()
 
             ## Give Churu when pts get 500 (100 in test)
             # Make it not work when points == 0
             # Make player get only 1 churu in item
             if points % churu_score == 0 and points != 0:
-                churu_value = 1
+                churu_value = 2
             
             ## Press C to use Item
-            if userInput[pygame.K_c] and churu_value == 1:
+            if userInput[pygame.K_c] and churu_value > 0:
                 churu_start_time = pygame.time.get_ticks()
                 player.invincible = True
+                churu_value = 1
 
-            if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 4000:  # 4 sec
+            if churu_start_time is not None and pygame.time.get_ticks() - churu_start_time > 3000:  # 3 secs timer
                 player.invincible = False
                 churu_start_time = None
                 churu_value = 0
-                
-            SCREEN.fill((255, 255, 255))
             
             player.draw(SCREEN)
             player.update(userInput)
@@ -297,9 +302,10 @@ def main():
                     if player.invincible == True:
                         pass
                     else:
-                        pygame.time.delay(2000)
-                        death_count += 1
-                        menu(death_count)
+                        pass
+                        # pygame.time.delay(2000)
+                        # death_count += 1
+                        # menu(death_count)
 
             background()
 
