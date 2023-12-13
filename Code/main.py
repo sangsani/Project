@@ -19,7 +19,6 @@ jump_sound_files = [os.path.join("Assets\\sounds\\cat1.mp3"),
                     os.path.join("Assets\\sounds\\cat3.mp3")]
     # Add as much as you need.
 
-
 # Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
