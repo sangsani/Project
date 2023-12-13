@@ -28,7 +28,10 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 points = 0 
 highest_point = 0  
 # Create Font Object
-font = pygame.font.Font(None,36)
+font = pygame.font.Font('freesansbold.ttf', 30)
+
+# Level
+level_num = 0
 
 RUNNING = [pygame.image.load(os.path.join("Assets/Cat", "CatRun1.png")),
            
@@ -92,10 +95,6 @@ class Churu:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.index], (self.x, self.y))  
-
-        # # Draw Star When it Used 
-        # if self.churu_active:
-        #     SCREEN.blit(STAR, (10, SCREEN_HEIGHT - STAR.get_height() - 10))
 
 class Cat:
     X_POS = 80
@@ -344,6 +343,25 @@ class Chaser:
         # Use self.index to select image ANIMATION
         SCREEN.blit(self.image[self.index], (self.x, self.y))
 
+# Make it easier to use
+def text_location(message, a, b):
+    SCREEN.blit(message, (SCREEN_WIDTH // 2 - a, SCREEN_HEIGHT // 2 - b))
+# Make how it is difficult
+def difficult(level_num):
+    font = pygame.font.Font('freesansbold.ttf', 18)
+    level_text = font.render("1:EASY 2:NORMAL 3:HARD", True, (125, 125, 125))
+    text_location(level_text, 540, 270)
+
+    if level_num == 0: # Normal
+        level_text = font.render("NORMAL", True, (8, 96, 168))
+        text_location(level_text, 535, 290)
+    if level_num == -50: # Hard
+        level_text = font.render("HARD", True, (8, 96, 168))
+        text_location(level_text, 535, 290)
+    if level_num == 200:  # Easy
+        level_text = font.render("EASY", True, (8, 96, 168))
+        text_location(level_text, 535, 290)
+
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, highest_point, churu_score
     run = True
@@ -381,7 +399,7 @@ def main():
     def score():
         global points, game_speed, highest_point, churu_score
         points += 1
-        if points % 100 == 0:
+        if points % (100 + level_num) == 0:
             game_speed += 1
 
         # Update HIGHTEST pts
@@ -517,18 +535,19 @@ def main():
 
         score()
 
+        # Show level
+        difficult(level_num)
+
         clock.tick(30)
         pygame.display.update()
 
-# Make it easier to use
-def text_location(message, a, b):
-                SCREEN.blit(message, (SCREEN_WIDTH // 2 - a, SCREEN_HEIGHT // 2 - b))
-                
 def menu(death_count, inform):
-    global points
+    global points, level_num
     run = True
     while run:
         SCREEN.fill((255, 255, 255))
+        # Show level
+        difficult(level_num)
         font = pygame.font.Font('freesansbold.ttf', 30)
 
         if death_count == 0:
@@ -594,10 +613,23 @@ def menu(death_count, inform):
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
+
                 if event.key == pygame.K_SPACE:
                     main()
+
                 elif event.key == pygame.K_p:
-                    menu(death_count,inform=1)           
+                    menu(death_count, inform=1)
+                    
+                elif event.key == pygame.K_1:
+                    level_num = 200
+                    difficult(level_num)
+                elif event.key == pygame.K_2:
+                    level_num = 0
+                    difficult(level_num)
+                elif event.key == pygame.K_3:
+                    level_num = -50
+                    difficult(level_num)
+
                 elif event.key == pygame.K_BACKSPACE:
                     menu(death_count, inform=0)
                 elif event.key == pygame.K_q or event.key == pygame.K_RETURN:
@@ -605,5 +637,4 @@ def menu(death_count, inform):
                     quit()
 
         pygame.display.update()
-            
 menu(death_count=0, inform=0)
