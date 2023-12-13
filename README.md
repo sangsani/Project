@@ -31,6 +31,10 @@
 - Backspace : Return to MENU
 - Q or Enter : QUIT
 
+**How to change DIFFICULTY-LEVEL**
+- Press 1: EASY, 2:NORMAL, 3:HARD
+- You can change it only in MENU
+
 ### Obstacle
 - If you touch Cactus, Bird : Game End
 - If you touch Dog : Your score lose 200 pts, Game End
