@@ -5,7 +5,7 @@ pygame.init()
 pygame.mixer.init() #Initialize the module
 
 # Gets the background music file.
-pygame.mixer.music.load('C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\music\\background1.mp3')
+pygame.mixer.music.load(os.path.join("Assets\\music\\background1.mp3"))
 
 # Set the volume of the background music. 0.5 is half the maximum volume.
 pygame.mixer.music.set_volume(0.3)
@@ -14,12 +14,10 @@ pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 
 # Generates a list of sound effects files.
-jump_sound_files = [
-    'C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\sounds\\jump1.MP3',
-    'C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\sounds\\Cartoon Boing.MP3',
-    'C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\sounds\\Tentacle Flop Down.MP3',
+jump_sound_files = [os.path.join("Assets\\sounds\\jump1.MP3"),
+                    os.path.join("Assets\\sounds\\Cartoon Boing.MP3"),
+                    os.path.join("Assets\\sounds\\Tentacle Flop Down.MP3")]
     # Add as much as you need.
-]
 
 
 # Global Constants
