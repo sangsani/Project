@@ -23,19 +23,22 @@
 
 ## 2. How to play
 ### KEY
+- Spacebar : Start Game
 - Upper Arrow keys : Jump
-- Space bar : Jump
 - Lower Arrow keys : Slide
-- C : Use item
+- C : Use item (Churu)
+- P : Show HOW-TO-PLAY
+- Backspace : Return to MENU
+- Q or Enter : QUIT
 
 ### Obstacle
 - If you touch Cactus, Bird : Game End
-- If you touch Dog : Your score lose 50 pts
-- If you touch Banana twice : Game End
+- If you touch Dog : Your score lose 200 pts, Game End
+- If you touch Banana twice in 5 sec : Game End
 
 ### Items
 - Every time you reach 500 pts : You get Churu
-*Churu : Gain invincibility for 5 seconds*
+*Churu : Gain invincibility for 3 seconds*
 
 
 ***You can get only 1 item for each***
@@ -43,7 +46,7 @@
 ***You can't get 2 Churu at 1 time***
 
 ## 3. Project Introduction
-- The project name ”Find the cat snacks“ is an open source project created by characterizing Chung-Ang University‘s famous cat, Myeong-Sami(Tani). 
+- The project name "Find the cat snacks" is an open source project created by characterizing Chung-Ang University's famous cat, Myeong-Sami(Tami). 
 - In a similar form to the Google Dinosaur Game, a cat runs away from the chaser(butler) and ventures out in search of delicious snacks. It increases fun and immersion by further developing Google dinosaur games.
 - We changed dinosaurs into cat characters so that students could feel more familiar and enjoyable, and added effectiveness obstacles such as bananas and dogs with certain coins deducted to plan for a higher quality and more difficult game. We have planned to experience meaningful games by adding cute stories, matching items (Ciao Churu: cat snacks, boosters, etc.) and sound effects.
 - By new recreating existing games, students will be able to relieve stress and love cats through games. We expect a lot of interest and participation. 
@@ -64,11 +67,9 @@
 ### Add item
 - Every time you reach 500 pts : You get Churu
 
-*Churu : Gain invincibility for 5 seconds*
+*Churu : Gain invincibility for 3 seconds*
 
 ### Background music and sound effects
-- Meow sound when touching an obstacle
-- Jump sound
-- Meow sound when acquiring Churu
+- When Cat Jump, Do Meow sound from Real Tami 
 - Background music, like funny and cozzy
 
