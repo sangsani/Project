@@ -143,7 +143,7 @@ class Cat:
             # Gets the selected sound effect file.
             jump_sound = pygame.mixer.Sound(jump_sound_file)
             # playing sound
-            jump_sound.play() 
+            jump_sound.play()
             
         elif userInput[pygame.K_DOWN] and not self.Cat_jump:
             self.Cat_duck = True
@@ -379,7 +379,6 @@ def main():
     #     churu_score += 500
     ################ IT DOESN'T WORKK?!################
 
-
     def score():
         global points, game_speed, highest_point, churu_score
         points += 1
@@ -510,7 +509,7 @@ def main():
             if chaser_hit_count == 2:
                 pygame.time.delay(800)
                 death_count += 1
-                menu(death_count)
+                menu(death_count, inform=0)
 
         background()
 
