@@ -32,6 +32,7 @@ highest_point = 0
 font = pygame.font.Font(None,36)
 
 RUNNING = [pygame.image.load(os.path.join("Assets/Cat", "CatRun1.png")),
+           
            pygame.image.load(os.path.join("Assets/Cat", "CatRun2.png"))]
 JUMPING = pygame.image.load(os.path.join("Assets/Cat", "CatJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Cat", "CatDuck1.png")),
@@ -41,6 +42,7 @@ DEAD = [pygame.image.load(os.path.join("Assets/Cat", "CatDead.png"))]
 
 END = [pygame.image.load(os.path.join("Assets/Cat", "CatEnd.png"))]
 START = [pygame.image.load(os.path.join("Assets/Cat", "CatStart.png"))]
+BACK = pygame.image.load(os.path.join("Assets/Other", "Reset.png"))
 
 SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
                 pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
@@ -494,7 +496,7 @@ def main():
                 else:
                     pygame.time.delay(800)
                     death_count += 1
-                    menu(death_count)
+                    menu(death_count, inform=0)
 
         if chaser_active:
             chaser.update()
@@ -520,7 +522,11 @@ def main():
         clock.tick(30)
         pygame.display.update()
 
-def menu(death_count):
+# Make it easier to use
+def text_location(message, a, b):
+                SCREEN.blit(message, (SCREEN_WIDTH // 2 - a, SCREEN_HEIGHT // 2 - b))
+                
+def menu(death_count, inform):
     global points
     run = True
     while run:
@@ -528,13 +534,18 @@ def menu(death_count):
         font = pygame.font.Font('freesansbold.ttf', 30)
 
         if death_count == 0:
-            # Add START IMG
+            # Add START IMG            
             SCREEN.blit(START[0], (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 160))
-            text = font.render("Press any Key to Start", True, (0, 0, 0))
+            text = font.render("Press SpaceBar to Start", True, (0, 0, 0))
+
+            # Add P TEXT
+            another_text = font.render("Press P to Show Rules", True, (125, 125, 125))
+            SCREEN.blit(another_text, (SCREEN_WIDTH // 2 - 165, SCREEN_HEIGHT // 2 + 30))  # Set Location
+
         elif death_count > 0:
             # Add END IMG
             SCREEN.blit(END[0], (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 230))
-            text = font.render("Press any Key to Restart", True, (0, 0, 0))
+            text = font.render("Press SpaceBar to Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             # Render 'Highest Points:' Text
             highest_point_text = font.render("Highest Points: " + str(highest_point), True, (125, 125, 125))
@@ -542,17 +553,55 @@ def menu(death_count):
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
-
+        
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
-        pygame.display.update()
+
+        if inform == 1:
+            SCREEN.fill((255, 255, 255))
+
+            font = pygame.font.Font('freesansbold.ttf', 30)
+            rule = font.render("*RUN AWAY from HAND*", True, (155, 17, 30))
+            text_location(rule, 220, 260)
+
+            back_text = font.render("Return", True, (125, 125, 125))
+            text_location(back_text, -300, -220)
+            text_location(BACK, -410, -200)
+
+            font = pygame.font.Font('freesansbold.ttf', 25)
+            information = font.render("1. Churu", True, (0, 0, 0))
+            text_location(information, 480, 220)
+            information = font.render("Every you get +500 score, you get this ITEM", True, (120, 120, 120))
+            text_location(information, 450, 180)
+            information = font.render( "- Press C key to use it", True, (120, 120, 120))
+            text_location(information, 450, 140)
+            information = font.render( "- You will be INVICIBLE MODE for 3 sec", True, (120, 120, 120))
+            text_location(information, 450, 100)
+            information = font.render( "2. Dog", True, (0, 0, 0))
+            text_location(information, 480, 60)
+            information = font.render( "- Watch out Dog! You will LOSE 200 score", True, (120, 120, 120))
+            text_location(information, 450, 20)
+            information = font.render( "3. Banana", True, (0, 0, 0))
+            text_location(information, 450, -20)
+            information = font.render( "- Watch out not to hit Banana twice in 5 sec", True, (120, 120, 120))
+            text_location(information, 450, -60)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                main()
+                if event.key == pygame.K_SPACE:
+                    main()
+                elif event.key == pygame.K_p:
+                    menu(death_count,inform=1)           
+                elif event.key == pygame.K_BACKSPACE:
+                    menu(death_count, inform=0)
+                elif event.key == pygame.K_q or event.key == pygame.K_RETURN:
+                    pygame.quit()
+                    quit()
 
-menu(death_count=0)
+        pygame.display.update()
+            
+menu(death_count=0, inform=0)
