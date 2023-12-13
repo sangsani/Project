@@ -2,6 +2,25 @@ import pygame
 import os
 import random
 pygame.init()
+pygame.mixer.init() #Initialize the module
+
+# Gets the background music file.
+pygame.mixer.music.load('C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\music\\background1.mp3')
+
+# Set the volume of the background music. 0.5 is half the maximum volume.
+pygame.mixer.music.set_volume(0.3)
+
+# Play background music. If you give -1 as the second factor, it'll play again from scratch when the music ends.
+pygame.mixer.music.play(-1)
+
+# Generates a list of sound effects files.
+jump_sound_files = [
+    'C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\sounds\\jump1.MP3',
+    'C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\sounds\\Cartoon Boing.MP3',
+    'C:\\Users\\Administrator\\opensource\\Project\\Code\\Assets\\sounds\\Tentacle Flop Down.MP3',
+    # Add as much as you need.
+]
+
 
 # Global Constants
 SCREEN_HEIGHT = 600
@@ -119,6 +138,12 @@ class Cat:
             self.Cat_duck = False
             self.Cat_run = False
             self.Cat_jump = True
+            # Select one sound effect file randomly from the Jump Sound effect file list.
+            jump_sound_file = random.choice(jump_sound_files)
+            # Gets the selected sound effect file.
+            jump_sound = pygame.mixer.Sound(jump_sound_file)
+            # playing sound
+            jump_sound.play() 
             
         elif userInput[pygame.K_DOWN] and not self.Cat_jump:
             self.Cat_duck = True
