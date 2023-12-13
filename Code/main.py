@@ -82,7 +82,7 @@ class Churu:
     def __init__(self):
         self.image = CHURU
         self.index = 0
-        self.x = 80
+        self.x = 60
         self.y = 430     # NEED TO CHANGE
         self.last_update = pygame.time.get_ticks()  # Add this line
         self.animation_interval = 150  # Add this line (500ms)
