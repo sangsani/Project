@@ -8,7 +8,7 @@ pygame.mixer.init() #Initialize the module
 pygame.mixer.music.load(os.path.join("Assets\\music\\background1.mp3"))
 
 # Set the volume of the background music. 0.5 is half the maximum volume.
-pygame.mixer.music.set_volume(0.3)
+pygame.mixer.music.set_volume(0.1)
 
 # Play background music. If you give -1 as the second factor, it'll play again from scratch when the music ends.
 pygame.mixer.music.play(-1)
