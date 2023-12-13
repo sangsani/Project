@@ -14,9 +14,9 @@ pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 
 # Generates a list of sound effects files.
-jump_sound_files = [os.path.join("Assets\\sounds\\jump1.MP3"),
-                    os.path.join("Assets\\sounds\\Cartoon Boing.MP3"),
-                    os.path.join("Assets\\sounds\\Tentacle Flop Down.MP3")]
+jump_sound_files = [os.path.join("Assets\\sounds\\cat1.mp3"),
+                    os.path.join("Assets\\sounds\\cat2.mp3"),
+                    os.path.join("Assets\\sounds\\cat3.mp3")]
     # Add as much as you need.
 
 
