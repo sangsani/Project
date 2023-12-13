@@ -377,7 +377,7 @@ def main():
     # Add Churu score higher when it go Faster
     # if (game_speed % 1000) - 1 == 0:
     #     churu_score += 500
-    ################ IT DOESN'T WROK?!################
+    ################ IT DOESN'T WORKK?!################
 
 
     def score():
@@ -583,9 +583,13 @@ def menu(death_count, inform):
             information = font.render( "- Watch out Dog! You will LOSE 200 score", True, (120, 120, 120))
             text_location(information, 450, 20)
             information = font.render( "3. Banana", True, (0, 0, 0))
-            text_location(information, 450, -20)
+            text_location(information, 480, -20)
             information = font.render( "- Watch out not to hit Banana twice in 5 sec", True, (120, 120, 120))
             text_location(information, 450, -60)
+            information = font.render( "4. Quit", True, (0, 0, 0))
+            text_location(information, 480, -100)
+            information = font.render( "- Press Q or Enter to QUIT anytime", True, (120, 120, 120))
+            text_location(information, 450, -140)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
