@@ -183,7 +183,7 @@ class Cat:
 
 # Add Star on Top
 class Star:
-    X_LOC = 80
+    X_LOC = 100
     Y_LOC = 250
     Y_LOC_DUCK = 280
     JUMP_HEIGHT = 8.5
